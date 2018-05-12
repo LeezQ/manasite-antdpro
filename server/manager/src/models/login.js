@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { accountLogin, transServerJson } from '../services/api';
+import { accountLogin } from '../services/user';
 import { setAuthority, setToken } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
