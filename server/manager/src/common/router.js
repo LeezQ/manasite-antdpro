@@ -78,12 +78,18 @@ export const getRouterData = app => {
     '/users/list': {
       component: dynamicWrapper(app, ['user'], () => import('../routes/UserManage/UserList')),
     },
-    '/users/editform': {
+    '/users/detailform': {
       component: dynamicWrapper(app, ['user'], () => import('../routes/UserManage/UserDetail')),
+    },
+    '/users/editform': {
+      component: dynamicWrapper(app, ['user'], () => import('../routes/UserManage/UserEdit')),
     },
 
     '/result/success': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
+    },
+    '/channel/list':{
+      component:dynamicWrapper(app,[],()=>import('../routes/ChannelManage/ChannelList'))
     },
     '/result/fail': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
