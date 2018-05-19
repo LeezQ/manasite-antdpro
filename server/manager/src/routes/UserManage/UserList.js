@@ -19,7 +19,8 @@ import {
   message,
   Badge,
   Divider,
-  Radio
+  Radio,
+  Tag
 } from 'antd';
 
 const RadioButton = Radio.Button;
@@ -59,7 +60,7 @@ export default class UserList extends PureComponent {
     });
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+  handleStandardTableChange = (pagination, filtersArg, sorter) => { 
     const {dispatch} = this.props;
     const {formValues} = this.state;
 
@@ -70,7 +71,7 @@ export default class UserList extends PureComponent {
     }, {});
 
     const params = {
-      currentPage: pagination.current,
+      page: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
       ...filters,
@@ -127,21 +128,21 @@ export default class UserList extends PureComponent {
     });
   };
 
-  confirmFreezeUser = (row, disabled) => {
+  confirmFreezeUser = (row, disabled) => { 
     const {selectedRows} = this.state;
     if (!(row || selectedRows))
       return;
 
     confirm({
       title: '温馨提示',
-      content: '你确定要' +(disabled ? '冻结' : '恢复')+ '此会员吗？',
+      content: '你确定要' +(disabled ? '冻结' : '解冻')+ '此会员吗？',
       okText: '确定',
       cancelText: '取消',
       onOk: ()=> {
         this.props.dispatch({
           type: 'user/freeze',
           payload: {
-            userIds: row ? row.user_id : selectedRows.map(row => row.user_id).join(','),
+            userIds: row.user_id ,
             disabled: disabled
           },
           callback: () => {
@@ -218,51 +219,58 @@ export default class UserList extends PureComponent {
   }
 
   render() {
-    const {user: {list}, loading} = this.props;
-    const {selectedRows, modalVisible} = this.state;
+    const {user: {data}, loading} = this.props;
+    const {selectedRows, modalVisible} = this.state; 
 
     const columns = [
-      {
+      { 
+        title: '',
+        dataIndex: 'verified',
+        render(val) {
+        return val ? (<Tag color="#108ee9">认证</Tag>): (<Tag>未认证</Tag>);
+        },
+      },
+      { 
         title: '芥摩号',
         dataIndex: 'uid',
       },
-      {
+      { 
         title: '昵称/姓名',
         dataIndex: 'nickname',
       },
-      {
+      { 
         title: '手机号',
         dataIndex: 'mobile',
         render(val) {
           return val ? (<span>{val}</span>) : (<span className={styles.warning}>未绑定</span>);
         },
       },
-      {
+      { 
         title: '所在位置',
         dataIndex: 'location',
         render(val) {
           return <span/>;
         },
       },
-      {
+      { 
         title: '注册时间',
         dataIndex: 'create_at',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
-      {
+      { 
         title: '操作',
         render: (val) => (
           <Fragment>
-            {
+            { 
               val.isDisabled ?
-                (<a onClick={() => this.confirmFreezeUser(val, false)}>恢复</a>) :
+                (<a onClick={() => this.confirmFreezeUser(val, false)}>解冻</a>) :
                 (<a onClick={() => this.confirmFreezeUser(val, true)}>冻结</a>)
             }
             <Divider type="vertical"/>
-            <a onClick={() => this.props.dispatch(routerRedux.push({pathname: '/users/editform', query: {user:val} }))}>编辑</a>
+            <a onClick={() => this.props.dispatch(routerRedux.push({pathname: '/users/editform', query: {user:val.user_id} }))}>编辑</a>
             <Divider type="vertical"/>
-            <a href="">查看</a>
+            <a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/detailform', query: {user:val.user_id}}))}>查看</a>
           </Fragment>
         ),
       },
@@ -272,19 +280,11 @@ export default class UserList extends PureComponent {
       <PageHeaderLayout title="会员管理">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
-            <div className={styles.tableListOperator}>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button onClick={() => this.confirmFreezeUser(null, true)}>批量冻结</Button>
-                  <Button onClick={() => this.confirmFreezeUser(null, false)}>批量恢复</Button>
-                </span>
-              )}
-            </div>
-            <StandardTable
+            <div className={styles.tableListForm}>{this.renderForm()}</div> 
+            <StandardTable 
               selectedRows={selectedRows}
               loading={loading}
-              data={list}
+              data={data}
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

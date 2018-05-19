@@ -1,7 +1,7 @@
-import {getUsersList,freeze} from '../services/user'
+import {getChannelList,deleteChannel} from '../services/channel'
 
 export default {
-  namespace: 'user',
+  namespace: 'channel',
 
   state: {
     data:{ 
@@ -13,15 +13,15 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       console.log('------query--list--data--',payload)
-      const response = yield call(getUsersList, payload);   
+      const response = yield call(getChannelList, payload);   
       yield put({
         type: 'save',
         payload: response.data
       });
     },
-    *freeze({ payload, callback }, { call, put }) {
+    *delete({ payload, callback }, { call, put }) {
       console.log('--freeze---payload----',payload)
-      const response = yield call(freeze, payload);   
+      const response = yield call(deleteChannel, payload);   
       if (callback) callback();
     },
   },

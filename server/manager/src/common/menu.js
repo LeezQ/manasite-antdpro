@@ -14,7 +14,7 @@ const menuData = [
   {
     name: '兴趣频道管理',
     icon: 'appstore',
-    path: 'blank'
+    path: 'channel/list'
   },
   {
     name: '财务报表',
