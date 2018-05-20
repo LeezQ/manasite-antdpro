@@ -89,7 +89,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
     },
     '/channel/list':{
-      component:dynamicWrapper(app,[],()=>import('../routes/ChannelManage/ChannelList'))
+      component:dynamicWrapper(app,['channel'],()=>import('../routes/ChannelManage/ChannelList'))
     },
     '/result/fail': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
