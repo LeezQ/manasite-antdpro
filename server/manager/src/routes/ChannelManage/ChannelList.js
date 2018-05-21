@@ -51,8 +51,7 @@ export default class ChannelList extends Component {
       const {dispatch} = this.props;
       dispatch({
         type: 'channel/fetch'
-      });
-
+      }); 
     }
     handleStandardTableChange = (pagination, filtersArg, sorter) => { 
       const {dispatch} = this.props;
@@ -166,18 +165,18 @@ export default class ChannelList extends Component {
         this.setState({ addModalVisible: false });
       });
     }
+    handleCancel=()=>{
+      const form=this.formRef.props.form;
+      form.resetFields();
+      this.setState({addModalVisible:false})
+    }
     saveFormRef = (formRef) => {
       this.formRef = formRef;
     }
      
     handleEditChannel=(e)=>{
       
-    } 
-    hideAddModal=()=>{
-      this.setState({
-        addModalVisible:false
-      })
-    }
+    }  
     renderForm() {
         const {getFieldDecorator} = this.props.form;
         return (
@@ -270,7 +269,7 @@ export default class ChannelList extends Component {
           wrappedComponentRef={this.saveFormRef}
           visible={this.state.addModalVisible}
           onCreate={this.handleCreate}
-          onCancle={this.handleCancle}
+          onCancel={this.handleCancel}
           >
           </AddChannelModel>
         </PageHeaderLayout>
