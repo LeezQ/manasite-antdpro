@@ -14,6 +14,14 @@ export async function queryNotices() {
 export async function getUsersList(){
   return request('/api/users')
 }
+export async function getUserInfo(param){
+  return request(`/api/users/${param}`)
+}
+
+export async function getUserCredit(param){
+  return request('/api/stats/user',{
+    header:{'user_id':param }})
+}
 
 export async function freeze(params){
   return request('/api/users/freeze',{

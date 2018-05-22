@@ -20,17 +20,17 @@ import {
   Badge,
   Divider,
   Radio,
-  Tag
+  Tag,
 } from 'antd';
-
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const confirm = Modal.confirm;
 
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './UserList.less';
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -135,7 +135,7 @@ export default class UserList extends PureComponent {
 
     confirm({
       title: '温馨提示',
-      content: '你确定要' +(disabled ? '冻结' : '解冻')+ '此会员吗？',
+      content: `你确定要${ disabled ? '冻结' : '解冻' }此会员吗？`,
       okText: '确定',
       cancelText: '取消',
       onOk: ()=> {
@@ -143,7 +143,7 @@ export default class UserList extends PureComponent {
           type: 'user/freeze',
           payload: {
             userIds: row.user_id ,
-            disabled: disabled
+            disabled,
           },
           callback: () => {
             this.setState({
@@ -156,7 +156,7 @@ export default class UserList extends PureComponent {
             });
           },
         });
-      }
+      },
     });
   };
 
@@ -167,32 +167,30 @@ export default class UserList extends PureComponent {
         <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="芥摩号">
-              {getFieldDecorator('uid')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('uid')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="昵　　称">
-              {getFieldDecorator('nickname')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('nickname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
         </Row>
         <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="手机号">
-              {getFieldDecorator('mobile')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="所在位置">
               {getFieldDecorator('location')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
-
-                </Select>
+                <Select placeholder="请选择" style={{width: '100%'}} />
               )}
             </FormItem>
           </Col>
@@ -220,8 +218,7 @@ export default class UserList extends PureComponent {
 
   render() {
     const {user: {data}, loading} = this.props;
-    const {selectedRows, modalVisible} = this.state; 
-
+    const {selectedRows, modalVisible} = this.state;   
     const columns = [
       { 
         title: '',
@@ -249,7 +246,7 @@ export default class UserList extends PureComponent {
         title: '所在位置',
         dataIndex: 'location',
         render(val) {
-          return <span/>;
+          return <span />;
         },
       },
       { 
@@ -260,6 +257,7 @@ export default class UserList extends PureComponent {
       },
       { 
         title: '操作',
+        dataIndex:'user_id',
         render: (val) => (
           <Fragment>
             { 
@@ -267,10 +265,10 @@ export default class UserList extends PureComponent {
                 (<a onClick={() => this.confirmFreezeUser(val, false)}>解冻</a>) :
                 (<a onClick={() => this.confirmFreezeUser(val, true)}>冻结</a>)
             }
-            <Divider type="vertical"/>
-            <a onClick={() => this.props.dispatch(routerRedux.push({pathname: '/users/editform', query: {user:val.user_id} }))}>编辑</a>
-            <Divider type="vertical"/>
-            <a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/detailform', query: {user:val.user_id}}))}>查看</a>
+            <Divider type="vertical" />
+            <a onClick={() => this.props.dispatch(routerRedux.push({pathname: '/users/editform', user_id:val }))}>编辑</a>
+            <Divider type="vertical" />
+            <a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/detailform', user_id:val}))}>查看</a>
           </Fragment>
         ),
       },
@@ -282,7 +280,8 @@ export default class UserList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div> 
             <StandardTable 
-              selectedRows={selectedRows}
+              selectedRows={selectedRows} 
+              rowKey="user_id"
               loading={loading}
               data={data}
               columns={columns}

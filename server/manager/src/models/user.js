@@ -1,4 +1,4 @@
-import {getUsersList,freeze} from '../services/user'
+import {getUsersList,getUserInfo,getUserCredit,freeze} from '../services/user'
 
 export default {
   namespace: 'user',
@@ -8,22 +8,32 @@ export default {
       list: [],
       pagination: {  
       },
-    } 
+    },
+    currentUser:{}, 
+    stats:{},
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      console.log('------query--list--data--',payload)
+    *fetch({ payload }, { call, put }) { 
       const response = yield call(getUsersList, payload);   
       yield put({
         type: 'save',
-        payload: response.data
+        payload: response.data,
       });
     },
-    *freeze({ payload, callback }, { call, put }) {
-      console.log('--freeze---payload----',payload)
-      const response = yield call(freeze, payload);   
+    *freeze({ payload, callback }, { call, put }) { 
+      const response = yield call(freeze, payload);  
       if (callback) callback();
     },
+    *info({ payload},{call,put}){   
+      const response=yield call(getUserInfo,payload)   
+      const stats=yield call(getUserCredit,payload)
+      yield put({
+        type:'current',
+        payload:{
+          currentUser:response.data,
+          stats:stats.data,
+      }})
+    }, 
   },
 
   reducers: {
@@ -32,6 +42,12 @@ export default {
         ...state,
         data: action.payload,
       };
-    }
+    },
+    current(state,action){ 
+      return {
+        ...state,
+        ...action.payload, 
+      }
+    }, 
   },
 };

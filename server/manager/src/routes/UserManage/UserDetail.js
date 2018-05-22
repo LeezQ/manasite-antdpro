@@ -1,29 +1,8 @@
-import React, { Component, Fragment} from 'react';
-import Debounce from 'lodash-decorators/debounce';
-import Bind from 'lodash-decorators/bind';
-import { connect } from 'dva'; 
-import {
-  Button,
-  Menu,
-  Dropdown,
-  Icon,
-  Row,
-  Col,
-  Steps,
-  Card,
-  Popover,
-  Badge,
-  Table,
-  Tooltip,
-  Divider,
-} from 'antd';
-import classNames from 'classnames'; 
+import React, {Component} from 'react';
+import { connect } from 'dva';  
+ 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout'; 
-import {Credit,UserInfo,UserData,UserPublic} from '../../components/UserDetail'
-
-const getWindowWidth = () => window.innerWidth || document.documentElement.clientWidth;
-
-
+import {Credit,UserInfo,UserData,UserPublic} from '../../components/UserDetail'   
 
 const tabList = [
   {
@@ -43,40 +22,53 @@ const tabList = [
   },
 ];
 
+@connect(({user, loading}) => ({
+  user,
+  loading: loading.models.user,
+}))
 
-export default class UserDetial extends Component { 
+class UserDetail extends Component {    
 
-  state = {
-    operationkey: 'userinfo'
+  state={ 
+    operationkey:'userinfo',
+  } 
+  componentDidMount(){
+    const {dispatch,location} =this.props
+    dispatch({
+      type:'user/info',
+      payload:location.user_id,
+    })
+  }
+  onOperationTabChange =(key) => {  
+    this.setState({operationkey:key})
   };
 
-  onOperationTabChange = key => {
-    this.setState({ operationkey: key });
-  };
-
-  renderSwitch(key) {
+  renderSwitch=(key,currentUser,stats)=>{
     switch(key) {
       case 'credit':
-        return (<Credit  />); 
+        return (<Credit stats={stats} />); 
       case 'userdata':
-        return (<UserData   />);
+        return (<UserData stats={stats} />);
       case 'userpublic':
-        return (<UserPublic  />); 
+        return (<UserPublic />); 
       default:
-        return (<UserInfo />); 
+        return (<UserInfo currentUser={currentUser} />); 
     }
   }
 
-  render() { 
-    const {operationkey} =this.state
+  render() {   
+    const {operationkey} =this.state  
+    const {user:{currentUser,stats}}=this.props
     return (
       <PageHeaderLayout
-        title="会员档案" 
+        title="会员档案"
         tabList={tabList}
         onTabChange={this.onOperationTabChange}
-      >   
-      {this.renderSwitch(operationkey)} 
+      > 
+        {this.renderSwitch(operationkey,currentUser,stats)}  
       </PageHeaderLayout>
     );
   }
 }
+
+export default UserDetail
