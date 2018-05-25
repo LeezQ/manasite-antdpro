@@ -1,4 +1,8 @@
-import {getUsersList,getUserInfo,getUserCredit,freeze} from '../services/user'
+import {
+  getUsersList,
+  getUserInfo,
+  getUserCredit,
+  freeze} from '../services/user'
 
 export default {
   namespace: 'user',
@@ -10,7 +14,7 @@ export default {
       },
     },
     currentUser:{}, 
-    stats:{},
+    stats:{}, 
   },
   effects: {
     *fetch({ payload }, { call, put }) { 
@@ -26,14 +30,14 @@ export default {
     },
     *info({ payload},{call,put}){   
       const response=yield call(getUserInfo,payload)   
-      const stats=yield call(getUserCredit,payload)
+      const stats=yield call(getUserCredit,payload) 
       yield put({
         type:'current',
         payload:{
           currentUser:response.data,
-          stats:stats.data,
+          stats:stats.data, 
       }})
-    }, 
+    },  
   },
 
   reducers: {

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';  
- 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout'; 
-import {Credit,UserInfo,UserData,UserPublic} from '../../components/UserDetail'   
-
+import {Credit,UserInfo,UserData,UserPublic,Follow} from '../../components/UserDetail'   
+ 
 const tabList = [
   {
     key: 'userinfo',
@@ -22,10 +21,10 @@ const tabList = [
   },
 ];
 
-@connect(({user, loading}) => ({
+@connect(({user,loading}) => ({
   user,
   loading: loading.models.user,
-}))
+})) 
 
 class UserDetail extends Component {    
 
@@ -39,9 +38,10 @@ class UserDetail extends Component {
       payload:location.user_id,
     })
   }
-  onOperationTabChange =(key) => {  
+  onOperationTabChange =(key) => {     
     this.setState({operationkey:key})
-  };
+  };   
+
 
   renderSwitch=(key,currentUser,stats)=>{
     switch(key) {
@@ -50,7 +50,8 @@ class UserDetail extends Component {
       case 'userdata':
         return (<UserData stats={stats} />);
       case 'userpublic':
-        return (<UserPublic />); 
+        return (
+          <UserPublic  {...this.props} />); 
       default:
         return (<UserInfo currentUser={currentUser} />); 
     }

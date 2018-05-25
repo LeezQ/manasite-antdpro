@@ -3,7 +3,7 @@ import request from '../utils/request';
 export async function accountLogin(params){
   return request('/api/users/login/admin',{
     method:'POST',
-    body:params
+    body:params,
   });
 }
 
@@ -26,6 +26,17 @@ export async function getUserCredit(param){
 export async function freeze(params){
   return request('/api/users/freeze',{
     method:'POST', 
-    body:params
+    body:params,
   })
+}
+
+export async function getDiscover(param){
+  return request('api/discover',{
+    method:'GET',
+    ...param,
+  })
+}
+
+export async function deletDiscover(id){
+  return request(`api/discover/${id}`,{method:'DELETE'})
 }
