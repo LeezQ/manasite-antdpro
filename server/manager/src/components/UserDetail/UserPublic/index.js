@@ -22,6 +22,10 @@ const confirm = Modal.confirm;
 export default class UserPubic extends Component {   
   
   state={  
+    /*
+    list 目前是测试数据，如果接口有数据的话，直接把list编程，list:[] 即可。
+    然后 把下面的方法中涉及到  this.setState({list:response.data.list}) 还原就OK
+    */
     list: [
       {
         "type": "share",
@@ -316,9 +320,8 @@ export default class UserPubic extends Component {
         ],
       },
     ], 
-    pagination:{
-      currentPage:1,
-      pageSize:8}, 
+    pagination:{ 
+    }, 
     loading: false,
     exchange:'exchange',
     isSuccessRecord:false,
@@ -327,34 +330,17 @@ export default class UserPubic extends Component {
   componentWillMount(){   
     const{location}=this.props 
     const param={currentPage:1,pageSize:8,user_id:location.user_id,type:'exchange'}
-    discoverService.getDiscover(param)
-    .then(((response)=>{  
-      if (response===undefined){
-        notification.warning({
-          message:'系统异常，请联系管理员',
-          description:'未检索到数据',
-        })
-      }
-      else if(response.status!=='ok'){
-        notification.warning({
-          message:'系统异常，请联系管理员',
-          description:response.message,
-        })
-      }
-      else{ 
-        // this.setState({list:response.data.list})
-      }
-    })) 
+    this.initDiscoverData(param)
   } 
-  handleListPageChange=(pagination)=>{ 
+  handleListPageChange=(page)=>{  
     const{location}=this.props 
-    const{exchange}=this.state
+    const{exchange,pagination}=this.state
     const param={
-      currentPage:pagination.current,
+      currentPage:page,
       pageSize:pagination.pageSize,
       user_id:location.user_id,
       type:exchange,
-    }
+    } 
     this.initDiscoverData(param)
   }
   handleChange=(e)=>{ 
@@ -368,6 +354,7 @@ export default class UserPubic extends Component {
     this.initDiscoverData(param)
   }
   initDiscoverData=(param)=>{
+    console.log('-------',param)
     this.setState({loading:true})
     discoverService.getDiscover(param)
     .then((response)=>{
@@ -388,51 +375,14 @@ export default class UserPubic extends Component {
           // list:response.data.list,
           exchange:param.type,
           pagination:{  
-            currentPage:param.currentPage,
-            pageSize:param.pageSize}})
+            current:param.currentPage,
+            pageSize:param.pageSize,
+            total:10,
+            // total:response.data.total,
+          }})
       } 
     })
-  }
-  handleDeleteItem=(id)=>{ 
-    if(id===undefined){
-      return
-    }
-    console.log('wil-----delete---id--is',id.target.value)
-    confirm({
-      title: '确定要删除？',
-      okText: '确定', 
-      cancelText: '取消', 
-      onOk() {
-        discoverService.deletDiscover(id)
-        .then(((response)=>{  
-          if(response===undefined){
-            notification.warning({
-              message:'系统异常，请联系管理员',
-              description:'返回结果undefined',
-            })
-          }else if(response.status!=='ok'){
-            notification.warning({
-              message:'系统异常，请联系管理员',
-              description:response.message,
-            })
-          }else{
-            notification.success({
-              message:'操作成功',
-            })
-            const{location}=this.props  
-            const param={
-              currentPage:1,
-              pageSize:8,
-              user_id:location.user_id,
-              type:this.state.exchange,
-            }  
-            this.initDiscoverData(param)
-          }
-        }))  
-      }, 
-    });
-    
-  }
+  } 
   handleScanRecord=()=>{ 
     const{isSuccessRecord}=this.state
     if(isSuccessRecord){
@@ -450,7 +400,10 @@ export default class UserPubic extends Component {
         loading={this.state.loading}
         grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
         dataSource={list}
-        pagination={this.state.pagination}
+        pagination={{
+          onChange:(page)=>this.handleListPageChange(page), 
+          ...this.state.pagination,
+        }}
         renderItem={item => (
           <List.Item key={item.id}>
             <Row gutter={16}>
