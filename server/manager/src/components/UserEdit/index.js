@@ -1,13 +1,6 @@
-
-import Credit from './Credit'
-import UserData from './UserData'
-import UserInfo from './UserInfo'
-import UserPublic from './UserPublic'
+ import AddAddress from './AddAddress'
 
 
-export {
-    UserInfo,
-    Credit,
-    UserData,
-    UserPublic,
+export { 
+    AddAddress,
 }

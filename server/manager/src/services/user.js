@@ -23,6 +23,13 @@ export async function getUserCredit(param){
     header:{'user_id':param }})
 }
 
+export async function updateUserForm(param){
+  return request(`/api/users/${param.id}`,{
+    method:'POST',
+    body:param,
+  })
+}
+
 export async function freeze(params){
   return request('/api/users/freeze',{
     method:'POST', 

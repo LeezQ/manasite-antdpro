@@ -20,7 +20,7 @@ import {
   Badge,
   Divider,
   Radio,
-  Tag
+  Tag,
 } from 'antd';
 
 import StandardTable from 'components/StandardTable';
@@ -44,13 +44,13 @@ export default class ChannelList extends Component {
         expandForm: false,
         selectedRows: [],
         formValues: {},
-        addModalVisible:false
+        addModalVisible:false,
     };
 
     componentDidMount() {
       const {dispatch} = this.props;
       dispatch({
-        type: 'channel/fetch'
+        type: 'channel/fetch',
       }); 
     }
     handleStandardTableChange = (pagination, filtersArg, sorter) => { 
@@ -96,7 +96,7 @@ export default class ChannelList extends Component {
             this.props.dispatch({
               type: 'channel/delete',
               payload: {
-                id: id 
+                id, 
               },
               callback: () => {  
                 this.props.dispatch({
@@ -105,7 +105,7 @@ export default class ChannelList extends Component {
                 });
               },
             });
-          }
+          },
         }); 
     } 
     handleSearch = e => {
@@ -138,10 +138,10 @@ export default class ChannelList extends Component {
             formValues: {},
         });
         this.props.dispatch({
-            type: 'channel/fetch'
+            type: 'channel/fetch',
         });
     };
-    handleAddChannel=(e)=>{ 
+    handleAddChannel=()=>{ 
         this.setState({addModalVisible:true})
     }
     handleCreate = () => {
@@ -184,7 +184,7 @@ export default class ChannelList extends Component {
             <Row gutter={{md: 8, lg: 24, xl: 48}}>
               <Col md={8} sm={24}>
                 <FormItem label="兴趣名称">
-                  {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+                  {getFieldDecorator('name')(<Input placeholder="请输入" />)}
                 </FormItem>
               </Col> 
               <Col md={8} sm={24}> 
@@ -204,8 +204,8 @@ export default class ChannelList extends Component {
               </Col>
             </Row>
             <Row>
-                <Col>
-                    <Button type="primary">
+              <Col>
+                  <Button type="primary">
                         保存排序
                     </Button>
                 </Col>
@@ -242,11 +242,11 @@ export default class ChannelList extends Component {
           render: (val) => (
             <Fragment>  
               <a onClick={() =>this.confirmDeleteChanel(val)}>删除</a>
-              <Divider type="vertical"/>
+              <Divider type="vertical" />
               <a onClick={()=>this.handleEditChannel(val)}>编辑</a>
             </Fragment>
           ),
-        }
+        },
       ];
     
       return (
@@ -256,7 +256,7 @@ export default class ChannelList extends Component {
               <div className={styles.tableListForm}>{this.renderForm()}</div> 
               <StandardTable   
                 selectedRows={selectedRows} 
-                rowKey={'id'}
+                rowKey="id"
                 loading={loading}
                 data={data}
                 columns={columns}
@@ -266,12 +266,11 @@ export default class ChannelList extends Component {
             </div>
           </Card>
           <AddChannelModel 
-          wrappedComponentRef={this.saveFormRef}
-          visible={this.state.addModalVisible}
-          onCreate={this.handleCreate}
-          onCancel={this.handleCancel}
-          >
-          </AddChannelModel>
+            wrappedComponentRef={this.saveFormRef}
+            visible={this.state.addModalVisible}
+            onCreate={this.handleCreate}
+            onCancel={this.handleCancel}
+           />
         </PageHeaderLayout>
       );
     }

@@ -2,7 +2,9 @@ import {
   getUsersList,
   getUserInfo,
   getUserCredit,
-  freeze} from '../services/user'
+  updateUserForm} from '../services/user'
+import { notification } from 'antd';
+import { routerRedux } from 'dva/router';
 
 export default {
   namespace: 'user',
@@ -38,6 +40,11 @@ export default {
           stats:stats.data, 
       }})
     },  
+    *submitUserForm({ payload }, { call,put }) { 
+      const response=yield call(updateUserForm, payload); 
+      notification.success({message:'操作成功！'});
+      yield put(routerRedux.push('/users/list'));
+    },
   },
 
   reducers: {

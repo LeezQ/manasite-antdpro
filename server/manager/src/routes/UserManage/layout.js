@@ -1,7 +1,7 @@
 export  const formItemLayout = {
     labelCol: {
       xs: { span: 24},
-      sm: { span: 8},
+      sm: { span: 5},
       
     },
     wrapperCol: { 
@@ -13,25 +13,25 @@ export  const formItemLayout = {
   export  const  detailItemLayout={
     labelCol: {
         xs: { span: 24},
-        sm: { span: 5},
+        sm: { span: 3},
         
       },
       wrapperCol: { 
         xs: { span: 24,offset:0},
-        sm: { span: 13,offset: 1 },
+        sm: { span: 13,offset: 0 },
       },
 }
-export  const checkBoxItemLayout={
-    labelCol: {
-        xs: { span: 24},
-        sm: { span: 5},
-        
-      },
-      wrapperCol: { 
-        xs: { span: 24,offset:0},
-        sm: { span: 6,offset: 0 },
-      },
-}
+export  const  companyItemLayout={
+  labelCol: {
+      xs: { span: 24},
+      sm: { span: 6,offset:6},
+      
+    },
+    wrapperCol: { 
+      xs: { span: 24,offset:0},
+      sm: { span: 12,offset: 0 },
+    },
+} 
 export const addressItemLayout = {
   labelCol: {
     xs: { span: 24 },
