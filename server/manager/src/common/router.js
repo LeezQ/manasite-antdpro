@@ -84,7 +84,9 @@ export const getRouterData = app => {
     '/users/editform': {
       component: dynamicWrapper(app, ['user','discover'], () => import('../routes/UserManage/UserEdit')),
     },
-
+    '/users/followdata': {
+      component: dynamicWrapper(app, ['user','follow'], () => import('../routes/UserManage/ContactData')),
+    }, 
     '/result/success': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
     },

@@ -47,3 +47,10 @@ export async function getDiscover(param){
 export async function deletDiscover(id){
   return request(`api/discover/${id}`,{method:'DELETE'})
 }
+
+export async function userFollowData(param){
+  return request(`api/friends/follower`,{
+    method:'GET',
+    ...param,
+  })
+}

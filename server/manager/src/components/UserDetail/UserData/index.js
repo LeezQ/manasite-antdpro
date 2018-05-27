@@ -1,17 +1,19 @@
 import React, { Component } from 'react';  
+import {routerRedux} from 'dva/router';
+import {connect} from 'dva';
 import {   
   Card,   
-} from 'antd';  
-import DescriptionList from 'components/DescriptionList';
+} from 'antd';   
 import styles from './index.less' 
 import numeral from 'numeral';
 
-const { Description } = DescriptionList;   
-
-
+@connect(({ user, loading }) => ({
+  user,
+  loading: loading.models.user,
+}))
 export default class UserData extends Component{ 
     render(){
-        const {stats} = this.props;  
+        const {stats,location} = this.props;  
         const CardContact = () => (
           <div className={styles.cardInfo}>
             <div>
@@ -20,7 +22,7 @@ export default class UserData extends Component{
             </div>  
             <div>
               <p>被关注人数</p>
-              <p><a href='#'>{stats.hasOwnProperty('follower')?numeral(stats.follower).format('0,0'):0}</a></p>
+              <p><a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/followdata',user_id:location.user_id,type:'follow',num:stats.follower,title:'被关注人数'}))}>{stats.hasOwnProperty('follower')?numeral(stats.follower).format('0,0'):0}</a></p>
             </div>
             <div>
               <p>特殊关注人</p>

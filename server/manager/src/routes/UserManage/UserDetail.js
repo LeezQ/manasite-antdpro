@@ -31,13 +31,16 @@ class UserDetail extends Component {
   state={ 
     operationkey:'userinfo',
   } 
-  componentDidMount(){
+  componentWillMount(){
     const {dispatch,location} =this.props
     dispatch({
       type:'user/info',
       payload:location.user_id,
-    })
-  }
+    }) 
+    if(location.hasOwnProperty('operationkey')){
+      this.setState({operationkey:location.operationkey})
+    }
+  }   
   onOperationTabChange =(key) => {     
     this.setState({operationkey:key})
   };   
@@ -46,9 +49,9 @@ class UserDetail extends Component {
   renderSwitch=(key,currentUser,stats)=>{
     switch(key) {
       case 'credit':
-        return (<Credit stats={stats} />); 
+        return (<Credit {...this.props} stats={stats} />); 
       case 'userdata':
-        return (<UserData stats={stats} />);
+        return (<UserData {...this.props} stats={stats} />);
       case 'userpublic':
         return (
           <UserPublic  {...this.props} />); 

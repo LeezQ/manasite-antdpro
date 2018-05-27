@@ -35,7 +35,7 @@ class UserEdit extends PureComponent{
       channels:[],
     }
   } 
-    componentWillMount(){
+    componentWillMount(){ 
       this.initData()
     }    
     initData=()=>{
@@ -133,7 +133,7 @@ class UserEdit extends PureComponent{
         switch(item.type){
           case 1:
           return( 
-            <Col span={8}> 
+            <Col key={item.type} span={8}> 
               <FormItem {...detailItemLayout} label="小学">
                 {getFieldDecorator('school', { 
                 initialValue:item.school,
@@ -145,7 +145,7 @@ class UserEdit extends PureComponent{
           )
           case 2:
           return(
-            <Col span={8}> 
+            <Col key={item.type} span={8}> 
               <FormItem {...detailItemLayout} label="中学">
                 {getFieldDecorator('school', { 
                 initialValue:item.school,
@@ -157,7 +157,7 @@ class UserEdit extends PureComponent{
 )
           case 3:
           return(
-            <Col span={8}> 
+            <Col key={item.type} span={8}> 
               <FormItem {...detailItemLayout} label="高中">
                 {getFieldDecorator('school', { 
                 initialValue:item.school,
@@ -181,7 +181,7 @@ class UserEdit extends PureComponent{
 )
           default:
           return(
-            <Col span={8}> 
+            <Col key={item.type} span={8}> 
               <FormItem {...detailItemLayout} label="其它">
                 {getFieldDecorator('school', { 
               initialValue:item.school,
