@@ -26,7 +26,7 @@ import {
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './ChannelList.less';
-import {AddChannelModel} from 'components/ChannelManger'
+import {AddChannelModel,EditChannelModel} from 'components/ChannelManger'
 
 const FormItem = Form.Item; 
 const confirm = Modal.confirm;
@@ -45,6 +45,8 @@ export default class ChannelList extends Component {
         selectedRows: [],
         formValues: {},
         addModalVisible:false,
+        editModalVisible:false,
+        currentData:{},
     };
 
     componentDidMount() {
@@ -165,6 +167,19 @@ export default class ChannelList extends Component {
         this.setState({ addModalVisible: false });
       });
     }
+    handleSave=()=>{ 
+      const form=this.formRef.props.form;
+      form.validateFields((err, values) => {
+        if(err){
+          return;
+        }
+        console.log('edit---values--is',values) 
+        this.setState({editModalVisible:false})
+      })
+    }
+    handleEditCancel=(e)=>{ 
+      this.setState({editModalVisible:false})
+    }
     handleCancel=()=>{
       const form=this.formRef.props.form;
       form.resetFields();
@@ -174,8 +189,8 @@ export default class ChannelList extends Component {
       this.formRef = formRef;
     }
      
-    handleEditChannel=(e)=>{
-      
+    handleEditChannel=(e)=>{  
+      this.setState({editModalVisible:true,currentData:e}) 
     }  
     renderForm() {
         const {getFieldDecorator} = this.props.form;
@@ -205,10 +220,10 @@ export default class ChannelList extends Component {
             </Row>
             <Row>
               <Col>
-                  <Button type="primary">
+                <Button type="primary">
                         保存排序
-                    </Button>
-                </Col>
+                </Button>
+              </Col>
             </Row>
           </Form>
         );
@@ -237,11 +252,10 @@ export default class ChannelList extends Component {
           dataIndex:'',
         },
         { 
-          title:'操作',
-          dataIndex:'id',
+          title:'操作', 
           render: (val) => (
             <Fragment>  
-              <a onClick={() =>this.confirmDeleteChanel(val)}>删除</a>
+              <a onClick={() =>this.confirmDeleteChanel(val.id)}>删除</a>
               <Divider type="vertical" />
               <a onClick={()=>this.handleEditChannel(val)}>编辑</a>
             </Fragment>
@@ -270,7 +284,14 @@ export default class ChannelList extends Component {
             visible={this.state.addModalVisible}
             onCreate={this.handleCreate}
             onCancel={this.handleCancel}
-           />
+          />
+          <EditChannelModel
+            wrappedComponentRef={this.saveFormRef} 
+            visible={this.state.editModalVisible} 
+            onSave={this.handleSave}
+            currentData={this.state.currentData}
+            onCancel={this.handleEditCancel}
+          /> 
         </PageHeaderLayout>
       );
     }

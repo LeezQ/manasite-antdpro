@@ -95,25 +95,45 @@ export default class ContactData extends PureComponent {
     }
     initData=(param)=>{
         this.setState({loading:true})
-        const {location}=this.props  
-        console.log({user_id:location.user_id,...param})
-        followservice.userFollowData({user_id:location.user_id,...param})
-        .then((response)=>{  
-            if(response!==undefined&&response.data.code===200){ 
-                this.setState({ 
-                    pagination:{
-                        total:10, 
-                        current:param.currentPage,
-                        pageSize:param.pageSize,
-                    },
-                }) 
-            }
-        }) 
+        const {location}=this.props    
+        switch(location.type){
+            case 'friends':
+            followservice.userFriendsData({user_id:location.user_id,...param})
+            .then((response)=>{  
+                if(response!==undefined&&response.data.code===200){ 
+                    this.setState({ 
+                        pagination:{
+                            total:10, 
+                            current:param.currentPage,
+                            pageSize:param.pageSize,
+                        },
+                    }) 
+                }
+            }) 
+            break;
+            case 'follow':
+            followservice.userFollowData({user_id:location.user_id,...param})
+            .then((response)=>{  
+                if(response!==undefined&&response.data.code===200){ 
+                    this.setState({ 
+                        pagination:{
+                            total:10, 
+                            current:param.currentPage,
+                            pageSize:param.pageSize,
+                        },
+                    }) 
+                }
+            }) 
+            break;
+            default:
+            break;
+        }
+        
         this.setState({loading:false})
     }
 
     handleListPageChange=(page)=>{   
-        const{exchange,pagination}=this.state
+        const{pagination}=this.state
         const param={
           currentPage:page,
           pageSize:pagination.pageSize,

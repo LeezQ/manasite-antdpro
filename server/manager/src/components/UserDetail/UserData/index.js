@@ -18,7 +18,7 @@ export default class UserData extends Component{
           <div className={styles.cardInfo}>
             <div>
               <p>关注人数</p>
-              <p><a href='#'>{stats.hasOwnProperty('friends')?numeral(stats.friends).format('0,0'):0}</a></p>
+              <p><a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/followdata',user_id:location.user_id,type:'friends',num:stats.friends,title:'关注人数'}))}>{stats.hasOwnProperty('friends')?numeral(stats.friends).format('0,0'):0}</a></p>
             </div>  
             <div>
               <p>被关注人数</p>
@@ -26,15 +26,15 @@ export default class UserData extends Component{
             </div>
             <div>
               <p>特殊关注人</p>
-              <p><a href='#'>{stats.hasOwnProperty('friends_specail')?numeral(stats.friends_specail).format('0,0'):0}</a></p>
+              <p><a onClick={()=>this.props.dispatch(routerRedux.push({pathname: '/users/followdata',user_id:location.user_id,type:'special',num:stats.friends_specail,title:'特殊关注人'}))}>{stats.hasOwnProperty('friends_specail')?numeral(stats.friends_specail).format('0,0'):0}</a></p>
             </div>
             <div>
               <p>收到的赞</p>
-              <p><a href='#'>{stats.hasOwnProperty('liked')?numeral(stats.liked).format('0,0'):0}</a></p>
+              <p><a>{stats.hasOwnProperty('liked')?numeral(stats.liked).format('0,0'):0}</a></p>
             </div>
             <div>
               <p>被转发量</p>
-              <p><a href='#'>{stats.hasOwnProperty('forwarded')?numeral(stats.forwarded).format('0,0'):0}</a></p>
+              <p><a>{stats.hasOwnProperty('forwarded')?numeral(stats.forwarded).format('0,0'):0}</a></p>
             </div>
           </div>
           );
@@ -58,11 +58,11 @@ export default class UserData extends Component{
             <div className={styles.cardInfo}>
               <div>
                 <p>发布的活动</p>
-                <p><a href='#'>{stats.hasOwnProperty('activity_pub')?numeral(stats.activity_pub).format('0,0'):0}</a></p>
+                <p><a>{stats.hasOwnProperty('activity_pub')?numeral(stats.activity_pub).format('0,0'):0}</a></p>
               </div>  
               <div>
                 <p>参加的活动</p>
-                <p><a href='#'>{stats.hasOwnProperty('activity_attend')?numeral(stats.activity_attend).format('0,0'):0}</a></p>
+                <p><a>{stats.hasOwnProperty('activity_attend')?numeral(stats.activity_attend).format('0,0'):0}</a></p>
               </div> 
             </div> 
             );
@@ -70,11 +70,11 @@ export default class UserData extends Component{
             <div className={styles.cardInfo}>
               <div>
                 <p>发布的分享</p>
-                <p><a href='#'>{stats.hasOwnProperty('share_pub')?numeral(stats.share_pub).format('0,0'):0}</a></p>
+                <p><a >{stats.hasOwnProperty('share_pub')?numeral(stats.share_pub).format('0,0'):0}</a></p>
               </div>  
               <div>
                 <p>收藏数量</p>
-                <p><a href='#'>{stats.hasOwnProperty('favorite')?numeral(stats.favorite).format('0,0'):0}</a></p>
+                <p><a>{stats.hasOwnProperty('favorite')?numeral(stats.favorite).format('0,0'):0}</a></p>
               </div> 
             </div> 
                 );

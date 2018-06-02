@@ -4,55 +4,55 @@ const menuData = [
   {
     name: '首页',
     icon: 'home',
-    path: 'home'
+    path: 'home',
   },
   {
     name: '会员管理',
     icon: 'user',
-    path: 'users/list'
+    path: 'users/list',
   },
   {
     name: '兴趣频道管理',
     icon: 'appstore',
-    path: 'channel/list'
+    path: 'channel/list',
   },
   {
     name: '财务报表',
     icon: 'profile',
-    path: 'blank1',
+    path: 'financial',
     children: [
       {
         name: '收费记录',
-        path: 'blank2',
+        path: 'chargerecord',
       },
       {
         name: '押金流水',
-        path: 'blank3'
+        path: 'deposit',
       },
       {
         name: '充值记录',
-        path: 'blank4'
+        path: 'presentrecord',
       },
       {
         name: '提现记录',
-        path: 'blank5'
-      }
-    ]
+        path: 'rechargerecord',
+      },
+    ],
   },
   {
     name: '编辑管理',
     icon: 'edit',
-    path: 'blank6'
+    path: 'blank6',
   },
   {
     name: '数据统计',
     icon: 'pie-chart',
-    path: 'blank7'
+    path: 'blank7',
   },
   {
     name: '客服系统',
     icon: 'customerservice',
-    path: 'blank8'
+    path: 'blank8',
   },
   {
     name: '系统设置',
@@ -79,9 +79,9 @@ const menuData = [
       {
         name: '评价管理',
         path: 'blank14',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 function formatter(data, parentPath = '/', parentAuthority) {

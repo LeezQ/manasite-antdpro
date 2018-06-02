@@ -353,12 +353,10 @@ export default class UserPubic extends Component {
     }  
     this.initDiscoverData(param)
   }
-  initDiscoverData=(param)=>{
-    console.log('-------',param)
+  initDiscoverData=(param)=>{ 
     this.setState({loading:true})
     discoverService.getDiscover(param)
-    .then((response)=>{
-      console.log('---query----data',response.data.list)
+    .then((response)=>{ 
       if(response===undefined){
         notification.warning({
           message:'系统异常，请联系管理员',
