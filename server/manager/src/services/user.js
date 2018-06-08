@@ -48,9 +48,17 @@ export async function deletDiscover(id){
   return request(`api/discover/${id}`,{method:'DELETE'})
 }
 
+// 用户，被关注
 export async function userFollowData(param){
   return request(`api/friends/follower`,{
     method:'GET',
     ...param,
   })
 }
+// 用户关注的人数
+export async function userFriendsData(param){
+  return request(`api/friends/follower`,{
+    method:'GET',
+    ...param,
+  })
+} 

@@ -132,6 +132,35 @@ export const getRouterData = app => {
     '/financial/rechargerecord': {
       component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/RechargeRecord')),
     },
+    // 编辑管理 
+    '/edit': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Edit')),
+    }, 
+    '/edit/subject': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Subject')),
+    }, 
+    '/edit/help': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Helper')),
+    },
+    // 系统管理
+    '/system/user': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/User')),
+    },
+    '/system/role': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/Role')),
+    },
+    '/system/common': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/Common')),
+    },
+    '/system/log': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/Log')),
+    },
+    '/system/sort': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/Sort')),
+    },
+    '/system/source': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/Source')),
+    },
   };
 
   // Get name from ./menu.js or just set it in the router data.

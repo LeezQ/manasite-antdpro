@@ -85,8 +85,7 @@ export default class ChargeRecord extends PureComponent {
   }
 
   render() {
-      const { financial:{data},loading, form } = this.props;
-      console.log('----data',data)
+      const { financial:{data},loading, form } = this.props; 
       const { getFieldDecorator } = form;
       const columns=[
           {

@@ -42,7 +42,7 @@ const menuData = [
   {
     name: '编辑管理',
     icon: 'edit',
-    path: 'blank6',
+    path: '/edit/subject',
   },
   {
     name: '数据统计',
@@ -57,28 +57,32 @@ const menuData = [
   {
     name: '系统设置',
     icon: 'setting',
-    path: 'blank9',
+    path: 'system',
     authority: 'admin',
     children: [
       {
+        name: '用户管理',
+        path: 'user',
+      },
+      {
         name: '角色管理',
-        path: 'blank10',
+        path: 'role',
       },
       {
         name: '资源管理',
-        path: 'blank11',
+        path: 'source',
       },
       {
         name: '日志管理',
-        path: 'blank12',
+        path: 'log',
       },
       {
         name: '排序管理',
-        path: 'blank13',
+        path: 'sort',
       },
       {
         name: '评价管理',
-        path: 'blank14',
+        path: 'common',
       },
     ],
   },
