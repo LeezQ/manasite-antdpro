@@ -1,30 +1,33 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';  
 import { connect } from 'dva';
-import moment from 'moment';
 import {
     Row,
     Col,
     Card,
     Form,
-    Input,
+    Input, 
+    Table,
+    Button, 
+    Popconfirm,
     Select,
-    Icon,
-    Button,
-    Dropdown,
-    Menu,
-    InputNumber,
-    DatePicker,
-    Modal,
-    message,
-    Badge,
-    Divider,
-  } from 'antd';
-
-import StandardTable from 'components/StandardTable';
+  } from 'antd'; 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TableList.less';
+import AddUserForm from 'components/System/AddForm'
+import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
 
+const data = [];
+for (let i = 0; i < 100; i++) {
+  data.push({
+    key: i.toString(),
+    username: `Edrward ${i}`,
+    mobile: '13169871233',
+    name: `name_is_${i}`,
+  });
+} 
+ 
 const FormItem = Form.Item;
+const EditableContext = React.createContext();
 
 @connect(({ system, loading }) => ({
     system,
@@ -32,9 +35,71 @@ const FormItem = Form.Item;
   }))
   @Form.create()
   export default class User extends PureComponent {
+
+    constructor(props){
+      super(props); 
  
-    state={
+      this.state={
+        data, 
+        editingKey:'',
         list_status:'edit',
+        visible:false,
+        }
+      this.columns=[
+        {
+          title: '用户名',
+          dataIndex: 'username',
+        },
+        {
+            title: '手机号',
+            dataIndex: 'mobile',
+          },
+        {
+            title: '姓名',
+            dataIndex: 'name',
+        },
+        {
+            title: '角色',
+            dataIndex: 'role',
+        },
+        {
+            title: '操作',
+            dataIndex:'id',
+            render: (text,record) => {
+              const editable = this.isEditing(record);
+              return (
+                <div>
+                  {editable ? (
+                    <span>
+                      <EditableContext.Consumer>
+                        {form => (
+                          <a
+                            href="javascript:;"
+                            onClick={() => this.save(form, record.key)}
+                            style={{ marginRight: 8 }}
+                          >
+                            保存
+                          </a>
+                        )}
+                      </EditableContext.Consumer>
+                      <Popconfirm
+                        title="确定要取消?"
+                        onConfirm={() => this.cancel(record.key)}
+                      >
+                        <a>取消</a>
+                      </Popconfirm>
+                    </span>
+                  ) : (
+                    <div>
+                      <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
+                      <a onClick={() => this.freeze(record.key)}>冻结</a> 
+                    </div>
+                  )}
+                </div>
+              );
+            },
+          },
+    ] 
     }
 
     componentDidMount() {
@@ -44,6 +109,15 @@ const FormItem = Form.Item;
         });
       }
 
+    isEditing = (record) => {
+      return record.key === this.state.editingKey;
+    };
+    edit(key) {
+      this.setState({ editingKey: key });
+    }
+    cancel = () => {
+      this.setState({ editingKey: '' });
+    };
     handleFormReset=()=>{ 
         const { form, dispatch } = this.props;
         form.resetFields();
@@ -78,6 +152,30 @@ const FormItem = Form.Item;
         }); 
     }
 
+    handleModalVisible=()=>{
+      this.setState({visible:true})
+    }
+
+    hidenModal=()=>{
+      this.setState({visible:false})
+    }
+
+    handleSave=()=>{
+      const form = this.formRef.props.form;
+      form.validateFields((err, values) => {
+        if (err) {
+          return;
+        } 
+        console.log('Received values of form: ', values);
+        form.resetFields();
+        this.setState({ visible: false });
+      });
+    }
+
+    saveFormRef = (formRef) => {
+      this.formRef = formRef;
+    }
+
     renderForm(){
         const { getFieldDecorator } = this.props.form; 
         return(
@@ -107,7 +205,7 @@ const FormItem = Form.Item;
                 <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                     重置
                 </Button> 
-                <Button type="primary" onClick={() => this.handleModalVisible(true)}>
+                <Button style={{ marginLeft: 8 }} type="primary" onClick={this.handleModalVisible}>
                     新增用户
                 </Button>
               </span>
@@ -117,50 +215,50 @@ const FormItem = Form.Item;
 
     render(){ 
         const {  data,loading } = this.props;
-        const { list_status }=this.state
-        const columns = [
-            {
-              title: '用户名',
-              dataIndex: '',
-            },
-            {
-                title: '手机号',
-                dataIndex: '',
-              },
-            {
-                title: '姓名',
-                dataIndex: '',
-            },
-            {
-                title: '角色',
-                dataIndex: '',
-            },
-            {
-                title: '操作',
-                render: () => (
-                  <Fragment>
-                    <a href="">编辑</a>
-                    <Divider type="vertical" />
-                    <a href="">冻结</a>
-                  </Fragment>
-                ),
-              },
-        ] 
+        const { list_status,visible }=this.state 
+        const components = {
+          body: {
+            row: EditableFormRow,
+            cell: EditableCell,
+          },
+        };
+        const columns = this.columns.map((col) => {
+          if (!col.editable) {
+            return col;
+          }
+          return {
+            ...col,
+            onCell: record => ({
+              record,
+              inputType: col.dataIndex ===  'role'?'Select':'text',
+              dataIndex: col.dataIndex,
+              title: col.title,
+              editing: this.isEditing(record),
+            }),
+          };
+        });
+    
         return(
-          <PageHeaderLayout title="查询表格">
+          <PageHeaderLayout title="用户管理">
             <Card bordered={false}>
               <div className={styles.tableList}>
                 <div className={styles.tableListForm}>{this.renderForm()}</div> 
 
-                <StandardTable 
-                  loading={loading}
-                  data={[]}
+                <Table
+                  components={components}
+                  bordered
+                  dataSource={this.state.data}
                   columns={columns}
-                  onSelectRow={this.handleSelectRows}
-                  onChange={this.handleStandardTableChange}
-                /> 
+                  rowClassName="editable-row"
+                />
               </div>
-            </Card>
+            </Card> 
+            <AddUserForm 
+              wrappedComponentRef={this.saveFormRef}
+              visible={visible}
+              onCancel={this.hidenModal}
+              onCreate={this.handleSave}
+            />
           </PageHeaderLayout>
 
 
