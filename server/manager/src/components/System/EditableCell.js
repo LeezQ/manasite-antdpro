@@ -20,6 +20,7 @@ children.push(<Option key={Math.random()}>运维</Option>);
 children.push(<Option key={Math.random()}>销售</Option>);  
 export const EditableFormRow = Form.create()(EditableRow);
 
+@Form.create()
 export class EditableCell extends React.Component {
   getInput = () => {  
     if (this.props.inputType === 'Select') {

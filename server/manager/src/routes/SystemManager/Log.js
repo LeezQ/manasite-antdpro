@@ -6,6 +6,6 @@ export default class Log extends Component {
 
     render(){
 
-        return(<div>Hello</div>)
+        return(<div />)
     }
 }
