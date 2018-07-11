@@ -169,7 +169,10 @@ export default function request(url, options) {
         return;
       }
       if (status === 403) {
-        dispatch(routerRedux.push('/exception/403'));
+        //dispatch(routerRedux.push('/exception/403'));
+        dispatch({
+          type: 'login/logout',
+        });
         return;
       }
       if (status <= 504 && status >= 500) {
