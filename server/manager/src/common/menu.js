@@ -40,6 +40,11 @@ const menuData = [
     ],
   },
   {
+    name: '客服系统',
+    icon: 'customerservice',
+    path: 'blank8',
+  },
+  {
     name: '编辑管理',
     icon: 'edit',
     path: '/edit/subject',
@@ -50,9 +55,27 @@ const menuData = [
     path: 'blank7',
   },
   {
-    name: '客服系统',
+    name: '动态管理',
     icon: 'customerservice',
     path: 'blank8',
+    children: [
+      {
+        name: '置换管理',
+        path: 'exchange',
+      },
+      {
+        name: '活动管理',
+        path: 'activity',
+      },
+      {
+        name: '分享管理',
+        path: 'share',
+      },
+      {
+        name: '评论管理',
+        path: 'comment',
+      },
+    ],
   },
   {
     name: '系统设置',
