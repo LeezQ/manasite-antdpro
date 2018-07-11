@@ -1,27 +1,27 @@
-import React, { Component } from 'react';     
-import { connect } from 'dva'; 
-import {  
-  Row, 
-  Col,  
-  Card, 
-  List, 
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import {
+  Row,
+  Col,
+  Card,
+  List,
   Radio,
-  Button, 
+  Button,
   Form,
   notification,
   Modal,
   Icon,
   Avatar,
-} from 'antd';   
+} from 'antd';
 import styles from './index.less'
-import StandardFormRow from 'components/StandardFormRow'; 
+import StandardFormRow from 'components/StandardFormRow';
 import * as discoverService from '../../../services/user'
 
-const { Meta } = Card;    
+const { Meta } = Card;
 const confirm = Modal.confirm;
-export default class UserPubic extends Component {   
-  
-  state={  
+export default class UserPubic extends Component {
+
+  state={
     /*
     list 目前是测试数据，如果接口有数据的话，直接把list编程，list:[] 即可。
     然后 把下面的方法中涉及到  this.setState({list:response.data.list}) 还原就OK
@@ -319,44 +319,44 @@ export default class UserPubic extends Component {
           "家居",
         ],
       },
-    ], 
-    pagination:{ 
-    }, 
+    ],
+    pagination:{
+    },
     loading: false,
     exchange:'exchange',
     isSuccessRecord:false,
   }
 
-  componentWillMount(){   
-    const{location}=this.props 
+  componentWillMount(){
+    const{location}=this.props
     const param={currentPage:1,pageSize:8,user_id:location.user_id,type:'exchange'}
     this.initDiscoverData(param)
-  } 
-  handleListPageChange=(page)=>{  
-    const{location}=this.props 
+  }
+  handleListPageChange=(page)=>{
+    const{location}=this.props
     const{exchange,pagination}=this.state
     const param={
       currentPage:page,
       pageSize:pagination.pageSize,
       user_id:location.user_id,
       type:exchange,
-    } 
+    }
     this.initDiscoverData(param)
   }
-  handleChange=(e)=>{ 
-    const{location}=this.props  
+  handleChange=(e)=>{
+    const{location}=this.props
     const param={
       currentPage:1,
       pageSize:8,
       user_id:location.user_id,
       type:e.target.value,
-    }  
+    }
     this.initDiscoverData(param)
   }
-  initDiscoverData=(param)=>{ 
+  initDiscoverData=(param)=>{
     this.setState({loading:true})
     discoverService.getDiscover(param)
-    .then((response)=>{ 
+    .then((response)=>{
       if(response===undefined){
         notification.warning({
           message:'系统异常，请联系管理员',
@@ -367,31 +367,31 @@ export default class UserPubic extends Component {
           message:'系统异常，请联系管理员',
           description:response.message,
         })
-      }else{ 
-        this.setState({ 
+      }else{
+        this.setState({
           loading:false,
           // list:response.data.list,
           exchange:param.type,
-          pagination:{  
+          pagination:{
             current:param.currentPage,
             pageSize:param.pageSize,
             total:10,
             // total:response.data.total,
           }})
-      } 
+      }
     })
-  } 
-  handleScanRecord=()=>{ 
+  }
+  handleScanRecord=()=>{
     const{isSuccessRecord}=this.state
     if(isSuccessRecord){
-       
+
     this.setState({isSuccessRecord:false})
     }else{
       this.setState({isSuccessRecord:true})
     }
   }
-  render(){   
-    const {list,exchange,isSuccessRecord}=this.state   
+  render(){
+    const {list,exchange,isSuccessRecord}=this.state
     const cardList=list?(
       <List
         rowKey="id"
@@ -399,42 +399,42 @@ export default class UserPubic extends Component {
         grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
         dataSource={list}
         pagination={{
-          onChange:(page)=>this.handleListPageChange(page), 
+          onChange:(page)=>this.handleListPageChange(page),
           ...this.state.pagination,
         }}
         renderItem={item => (
           <List.Item key={item.id}>
             <Row gutter={16}>
               <Col>
-                <Icon type="share-alt" /> 
+                <Icon type="share-alt" />
                 <Icon type="heart-o" />
-              </Col> 
+              </Col>
             </Row>
             <Row>
-              <Card 
-                style={{width:300}} 
-                cover={item.cover?<img height={300}  src={item.cover} />:<img height={300} src='http://47.95.250.201:3000/public/uploads/1526128657516.jpg' />}
+              <Card
+                style={{width:300}}
+                cover={item.cover?<img height={300}  src={item.cover} />:<img height={300} src='http://120.24.212.29:3000/public/uploads/1526128657516.jpg' />}
               >
-                <Row> 
+                <Row>
                   <Col span={18} offset={0}>
                     {item.title}
                   </Col>
-                  <Col span={4} offset={2}> 
+                  <Col span={4} offset={2}>
                     <Icon
                       type='delete'
                       onClick={()=>{
                     console.log(item.id)
                      confirm({
                       title: '确定要删除？',
-                      okText: '确定', 
+                      okText: '确定',
                       cancelText: '取消',
                     });
                   }}
                     />
                   </Col>
                 </Row>
-                <Row> 
-                  this is summary but have not data 
+                <Row>
+                  this is summary but have not data
                 </Row>
                 <Row>
               2018-05-01 16:43
@@ -444,9 +444,9 @@ export default class UserPubic extends Component {
           </List.Item>
       )}
       />
-  ) : null;   
-    return( 
-      <div>  
+  ) : null;
+    return(
+      <div>
         <Card bordered={false}>
           <Form layout="inline">
             <StandardFormRow grid last>
@@ -462,7 +462,7 @@ export default class UserPubic extends Component {
                   { exchange==='exchange'?<Button onClick={this.handleScanRecord} type="dashed">{isSuccessRecord?'返回':'查看成交交换记录'}</Button>:null}
                 </Col>
               </Row>
-            </StandardFormRow> 
+            </StandardFormRow>
           </Form>
         </Card>
         <br />
