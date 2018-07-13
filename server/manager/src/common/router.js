@@ -86,7 +86,7 @@ export const getRouterData = app => {
     },
     '/users/followdata': {
       component: dynamicWrapper(app, ['user','follow'], () => import('../routes/UserManage/ContactData')),
-    }, 
+    },
     '/result/success': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
     },
@@ -132,15 +132,19 @@ export const getRouterData = app => {
     '/financial/rechargerecord': {
       component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/RechargeRecord')),
     },
-    // 编辑管理 
+    // 编辑管理
     '/edit': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Edit')),
-    }, 
+    },
     '/edit/subject': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Subject')),
-    }, 
+    },
     '/edit/help': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Helper')),
+    },
+    //活动管理
+    '/dynamic/exchange': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Exchange')),
     },
     // 系统管理
     '/system/user': {

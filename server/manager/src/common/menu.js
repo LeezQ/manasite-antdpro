@@ -42,7 +42,7 @@ const menuData = [
   {
     name: '客服系统',
     icon: 'customerservice',
-    path: 'blank8',
+    path: 'customer',
   },
   {
     name: '编辑管理',
@@ -57,7 +57,7 @@ const menuData = [
   {
     name: '动态管理',
     icon: 'customerservice',
-    path: 'blank8',
+    path: 'dynamic',
     children: [
       {
         name: '置换管理',
