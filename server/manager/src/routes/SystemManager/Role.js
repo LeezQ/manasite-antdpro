@@ -15,7 +15,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TableList.less';
 import AddRoleForm from 'components/System/AddRoleForm'
 import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
-import {roles} from '../../services/system'
+import {roles, getMenu} from '../../services/system'
 
 const data = [];
 for (let i = 0; i < 5; i++) {
@@ -101,7 +101,13 @@ export default class Role extends PureComponent {
   }
   
   componentDidMount() {
+    getMenu().then((data) => {
+      console.log(data);
+    })
     roles().then((data) => {
+      if (data.status === 'ok') {
+        this.setState({roles: data.data.list})
+      }
       console.log(data)
     });
     const { dispatch } = this.props;
@@ -250,7 +256,7 @@ export default class Role extends PureComponent {
           <Table
           components={components}
           bordered
-          dataSource={this.state.data}
+          dataSource={this.state.roles}
           columns={columns}
           rowClassName="editable-row"
           />

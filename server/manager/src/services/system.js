@@ -5,5 +5,12 @@ export async function roles(param){
       method:'GET',
       ...param,
     })
-} 
+}
+
+export async function getMenu(param){
+  return request(`api/system/menus`,{
+    method:'GET',
+    ...param,
+  })
+}
 
