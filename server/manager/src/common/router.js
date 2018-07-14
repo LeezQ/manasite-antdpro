@@ -142,9 +142,18 @@ export const getRouterData = app => {
     '/edit/help': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Helper')),
     },
-    //活动管理
+    //活动管理-置换管理
     '/dynamic/exchange': {
       component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Exchange')),
+    },
+    '/dynamic/activity': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Activity')),
+    },
+    '/dynamic/share': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Share')),
+    },
+    '/dynamic/comment': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Comment')),
     },
     // 系统管理
     '/system/user': {

@@ -17,10 +17,10 @@ const TabPane = Tabs.TabPane;
     loading: loading.models.dynamic,
 }))
 
-export default class Exchange extends PureComponent {
+export default class Activity extends PureComponent {
 
   state={
-    tabpage: "waiting"
+    tabpage: "process"
   }
 
   componentDidMount() {
@@ -87,21 +87,11 @@ export default class Exchange extends PureComponent {
     renderPrompt(){
         let {tabpage} = this.state;
         switch(tabpage){
-            case "exchange":
+            case "process":
                 return {
-                    firstData:<p>2018-01-01 00:00:00</p>,
-                    secondData: <p>小瓜子：已发货</p>
+                    firstData:<p>2018-01-01 00:00:00 <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
                 }
-            case "question":
-                return {
-                    firstData:<p>2018-01-01 00:00:00</p>,
-                    secondData:
-                        <p>小瓜子：
-                            <span style={{color:"red"}}>存在异议</span>
-                            <span style={{float:"right",color:"#1890ff"}}>查看证据</span>
-                        </p>
-                }
-            case "finished":
+            case "ended":
                 return {
                     firstData:<p>2018-01-01 00:00:00</p>
                 };
@@ -116,8 +106,8 @@ export default class Exchange extends PureComponent {
                 }
             default:
                 return {
-                    firstData:<p>2018-01-01 00:00:00 <span style={{float:"right"}}>收到申请：10</span></p>,
-                    secondData:""
+                    firstData:null,
+                    secondData:null
                 }
         }
     }
@@ -143,24 +133,14 @@ export default class Exchange extends PureComponent {
         }
         const tabList=[
           {
-              key: 'waiting',
-              tab: '待置换',
+              key: 'process',
+              tab: '进行中',
+              count:0
+          },
+          {
+              key: 'ended',
+              tab: '已结束',
               count:10
-          },
-          {
-              key: 'exchange',
-              tab: '交换中',
-              count:0
-          },
-          {
-              key: 'question',
-              tab: '有异议',
-              count:5
-          },
-          {
-              key: 'finished',
-              tab: '已完成',
-              count:0
           },
           {
               key: 'deleted',
@@ -170,7 +150,7 @@ export default class Exchange extends PureComponent {
         ]
 
         return (
-          <PageHeaderLayout title="置换管理">
+          <PageHeaderLayout title="活动管理">
             <Card bordered={false}>
               <div className={styles.tableList}>
                 <Tabs defaultActiveKey={this.state.tabpage} onChange={this.onTabChange}>

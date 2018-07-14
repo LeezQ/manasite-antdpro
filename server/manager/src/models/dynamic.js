@@ -1,4 +1,4 @@
-//import * as services from '../services/financial'
+import * as services from '../services/dynamic'
 import { notification } from 'antd';
 
 export default {
@@ -7,8 +7,7 @@ export default {
     state: {
         data:{
             list:[],
-            pagination:{
-            },
+            pagination:{},
         },
     },
 
