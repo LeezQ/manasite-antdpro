@@ -61,7 +61,7 @@ class AddUserForm extends Component{
               </FormItem>
 
               <FormItem label="姓名">
-                {getFieldDecorator('name', {
+                {getFieldDecorator('names', {
                         rules: [{ required: true, message: '请输入手姓名' }],
                     })(
                       <Input />

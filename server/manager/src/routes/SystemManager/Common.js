@@ -6,6 +6,6 @@ export default class Common extends Component {
 
     render(){
 
-        return(<div>Hello</div>)
+        return(<div>Hello123</div>)
     }
 }
