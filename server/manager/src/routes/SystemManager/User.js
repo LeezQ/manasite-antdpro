@@ -17,10 +17,10 @@ import AddUserForm from 'components/System/AddForm'
 import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
 
 const data = [];
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 5; i++) {
   data.push({
     key: i.toString(),
-    username: `Edrward ${i}`,
+    username: `Edrwards ${i}`,
     mobile: '13169871233',
     name: `name_is_${i}`,
   });
