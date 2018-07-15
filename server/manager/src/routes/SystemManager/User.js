@@ -1,31 +1,22 @@
-import React, { PureComponent, Fragment } from 'react';  
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import {
     Row,
     Col,
     Card,
     Form,
-    Input, 
+    Input,
     Table,
-    Button, 
+    Button,
     Popconfirm,
     Select,
-  } from 'antd'; 
+  } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TableList.less';
 import AddUserForm from 'components/System/AddForm'
 import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
+import {getUsersList} from '../../services/user'
 
-const data = [];
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i.toString(),
-    username: `Edrwards ${i}`,
-    mobile: '13169871233',
-    name: `name_is_${i}`,
-  });
-} 
- 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -38,10 +29,10 @@ const EditableContext = React.createContext();
 export default class User extends PureComponent {
 
     constructor(props){
-      super(props); 
+      super(props);
  
       this.state={
-        data, 
+        data: [],
         editingKey:'',
         list_status:'edit',
         visible:false,
@@ -52,58 +43,64 @@ export default class User extends PureComponent {
           dataIndex: 'username',
         },
         {
-            title: '手机号',
-            dataIndex: 'mobile',
+          title: '手机号',
+          dataIndex: 'mobile',
           },
         {
-            title: '姓名',
-            dataIndex: 'name',
+          title: '姓名',
+          dataIndex: 'name',
         },
         {
-            title: '角色',
-            dataIndex: 'role',
+          title: '角色',
+          dataIndex: 'role',
         },
         {
-            title: '操作',
-            dataIndex:'id',
-            render: (text,record) => {
-              const editable = this.isEditing(record);
-              return (
-                <div>
-                  {editable ? (
-                    <span>
-                      <EditableContext.Consumer>
-                        {form => (
-                          <a
-                            href="javascript:;"
-                            onClick={() => this.save(form, record.key)}
-                            style={{ marginRight: 8 }}
-                          >
-                            保存
-                          </a>
-                        )}
-                      </EditableContext.Consumer>
-                      <Popconfirm
-                        title="确定要取消?"
-                        onConfirm={() => this.cancel(record.key)}
-                      >
-                        <a>取消</a>
-                      </Popconfirm>
-                    </span>
-                  ) : (
-                    <div>
-                      <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
-                      <a onClick={() => this.freeze(record.key)}>冻结</a> 
-                    </div>
+          title: '操作',
+          dataIndex:'id',
+          render: (text,record) => {
+            const editable = this.isEditing(record);
+            return (
+            <div>
+              {editable ? (
+              <span>
+                <EditableContext.Consumer>
+                  {form => (
+                    <a
+                      href="javascript:;"
+                      onClick={() => this.save(form, record.key)}
+                      style={{ marginRight: 8 }}
+                    >
+                    保存
+                    </a>
                   )}
-                </div>
-              );
-            },
+                  </EditableContext.Consumer>
+                    <Popconfirm
+                      title="确定要取消?"
+                      onConfirm={() => this.cancel(record.key)}
+                      >
+                      <a>取消</a>
+                    </Popconfirm>
+                  </span>
+              ) : (
+              <div>
+                <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
+                <a onClick={() => this.freeze(record.key)}>冻结</a>
+              </div>
+              )}
+            </div>
+            );
           },
-    ] 
+        },
+      ]
     }
 
     componentDidMount() {
+      getUsersList().then((data) => {
+        if (data.status === 'ok') {
+          console.log(data.data)
+          this.setState({data: data.data.list})
+        }
+      })
         const { dispatch } = this.props;
         dispatch({
           type: 'system/roles',
@@ -115,8 +112,8 @@ export default class User extends PureComponent {
     isEditing = (record) => {
       return record.key === this.state.editingKey;
     };
-    freeze(key){  
-      
+    freeze(key){
+    
     }
     edit(key) {
       this.setState({ editingKey: key });
@@ -144,13 +141,13 @@ export default class User extends PureComponent {
         }
       });
     }
-    handleFormReset=()=>{ 
+    handleFormReset=()=>{
         const { form, dispatch } = this.props;
         form.resetFields();
     }
 
-    handleSelectRows = rows => { 
-        
+    handleSelectRows = rows => {
+    
     };
 
     handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -171,11 +168,11 @@ export default class User extends PureComponent {
         };
         if (sorter.field) {
             params.sorter = `${sorter.field}_${sorter.order}`;
-        } 
+        }
         dispatch({
             type: 'system/roles',
             payload: params,
-        }); 
+        });
     }
 
     handleModalVisible=()=>{
@@ -191,7 +188,7 @@ export default class User extends PureComponent {
       form.validateFields((err, values) => {
         if (err) {
           return;
-        } 
+        }
         console.log('Received values of form: ', values);
         form.resetFields();
         this.setState({ visible: false });
@@ -203,7 +200,7 @@ export default class User extends PureComponent {
     }
 
     renderForm(){
-        const { getFieldDecorator } = this.props.form; 
+        const { getFieldDecorator } = this.props.form;
         return(
           <Form onSubmit={this.handleSearch} layout="inline">
             <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -222,7 +219,7 @@ export default class User extends PureComponent {
                   {getFieldDecorator('role')(<Input placeholder="请输入" />)}
                 </FormItem>
               </Col>
-            </Row>   
+            </Row>
             <div style={{ overflow: 'hidden' }}>
               <span style={{ float: 'right', marginBottom: 24 }}>
                 <Button type="primary" htmlType="submit">
@@ -230,18 +227,18 @@ export default class User extends PureComponent {
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                     重置
-                </Button> 
+                </Button>
                 <Button style={{ marginLeft: 8 }} type="primary" onClick={this.handleModalVisible}>
                     新增用户
                 </Button>
               </span>
-            </div> 
+            </div>
           </Form>);
     }
 
-    render(){ 
+    render(){
         const {  data,loading } = this.props;
-        const { list_status,visible }=this.state 
+        const { list_status,visible }=this.state
         const components = {
           body: {
             row: EditableFormRow,
@@ -268,7 +265,7 @@ export default class User extends PureComponent {
           <PageHeaderLayout title="用户管理">
             <Card bordered={false}>
               <div className={styles.tableList}>
-                <div className={styles.tableListForm}>{this.renderForm()}</div> 
+                <div className={styles.tableListForm}>{this.renderForm()}</div>
 
                 <Table
                   components={components}
@@ -278,14 +275,14 @@ export default class User extends PureComponent {
                   rowClassName="editable-row"
                 />
               </div>
-            </Card> 
-            <AddUserForm 
+            </Card>
+            <AddUserForm
               wrappedComponentRef={this.saveFormRef}
               visible={visible}
               onCancel={this.hidenModal}
               onCreate={this.handleSave}
             />
-          </PageHeaderLayout> 
+          </PageHeaderLayout>
         )
     }
 }

@@ -13,7 +13,9 @@ import {
   Dropdown,
   Menu
 } from 'antd';
-import {getChannelList} from '../../services/channel'
+import {getChannelList} from '../../services/channel';
+import {getMenu, roles} from '../../services/system'
+import ProvinceSelect from './ProvinceSelect.js'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -24,11 +26,20 @@ const CheckboxGroup = Checkbox.Group;
 class AddRoleForm extends Component{
   
   state={
-    channels: []
+    channels: [],
+    menu: []
   }
   componentDidMount(){
     this.getChannel();
+    this.getMenu();
   }
+  getMenu = () => {
+    getMenu().then((data) => {
+      if (data.status === 'ok') {
+        this.setState({menu: data.data.list});
+      }
+    });
+  };
   getChannel = () => {
     getChannelList().then((data) => {
       if (data.status === 'ok') {
@@ -48,25 +59,46 @@ class AddRoleForm extends Component{
   handleParentChange = (e) => {
     console.log(e)
   };
+  handleChange = (value) => {
+    const obj = {};
+    obj.province = value[0];
+    obj.city = value[1];
+    console.log(obj);
+  };
+  handleSubmit = () => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const obj = {};
+        obj.name = values.name;
+        obj.location = {
+          province: '河北省',
+          city: '石家庄市'
+        };
+        obj.channels = values.channels;
+        roles(obj).then((data) => {
+          console.log(data);
+        })
+        console.log('Received values of form: ', values);
+      }
+    });
+  };
   render(){
     const {channels}=this.state
     const {visible,form,onCancel, onCreate} =this.props
     const { getFieldDecorator } = form;
     const menu = (
     <Menu onClick={this.handleParentChange}>
-      <Menu.Item key="1">1st menu item</Menu.Item>
-      <Menu.Item key="2">2nd menu item</Menu.Item>
-      <Menu.Item key="3">3rd item</Menu.Item>
+      <Menu.Item key="0">测试</Menu.Item>
     </Menu>
     );
     return(
     <Modal
-    visible={visible}
-    title="增加角色"
-    okText="确定"
-    onCancel={onCancel}
-    onOk={onCreate}
-    destroyOnClose
+      visible={visible}
+      title="增加角色"
+      okText="确定"
+      onCancel={onCancel}
+      onOk={this.handleSubmit}
+      destroyOnClose
     >
       <Form layout="vertical">
         <FormItem label="角色名称">
@@ -77,9 +109,9 @@ class AddRoleForm extends Component{
           )}
         </FormItem>
         
-        <FormItem label="上机角色">
+        <FormItem label="上级角色">
           {getFieldDecorator('parent', {
-            rules: [{ required: true, message: '请选择父级角色' }],
+          
           })(
           <Dropdown overlay={menu} trigger={['click']}>
             <Button style={{ marginLeft: 8 }}>
@@ -91,14 +123,8 @@ class AddRoleForm extends Component{
         
         <FormItem label="所在地区">
           {getFieldDecorator('default_region', {
-            rules: [{ required: true, message: '请选择所在地区' }],
-          })(
-          <Dropdown overlay={menu}>
-            <Button style={{ marginLeft: 8 }}>
-              请选择 <Icon type="down" />
-            </Button>
-          </Dropdown>
-          )}
+          
+          })(<ProvinceSelect handleChange={this.handleChange}/>)}
         </FormItem>
         
         <FormItem label="管理频道">

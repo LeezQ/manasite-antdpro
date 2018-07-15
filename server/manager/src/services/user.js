@@ -12,7 +12,7 @@ export async function queryNotices() {
 }
 
 export async function getUsersList(){
-  return request('/api/users')
+  return request('/api/users?is_admin=true&category=full')
 }
 export async function getUserInfo(param){
   return request(`/api/users/${param}`)
