@@ -26,7 +26,10 @@ export default class Exchange extends PureComponent {
   componentDidMount() {
     const {dispatch} = this.props;
     dispatch({
-      type: 'financial/present',
+      type: 'dynamic/fetchExchange',
+      payload:{
+        type:"exchange"
+      }
     });
   }
 
@@ -125,27 +128,13 @@ export default class Exchange extends PureComponent {
     render() {
         const { dynamic:{data},loading, form } = this.props;
         const { getFieldDecorator } = form;
+        const {list,pagination={}} = data.list;
 
-        const list =[];
-        for(let i =0;i<10;i++){
-            list.push({
-                id:i,
-                cover:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531500848047&di=1d4389597aaadaf4a049b254663dfee3&imgtype=0&src=http%3A%2F%2Fuploads.oh100.com%2Fallimg%2F1710%2F129-1G011154315334.jpg",
-                title:'JAM0000008   小瓜子',
-                createdAt:'2018-10-10 00:00:00',
-                applyCount:12
-            })
-        }
-        //临时数据
-        const _data={
-            list:list,
-            pagination:{}
-        }
         const tabList=[
           {
               key: 'waiting',
               tab: '待置换',
-              count:10
+              count:0
           },
           {
               key: 'exchange',
@@ -155,7 +144,7 @@ export default class Exchange extends PureComponent {
           {
               key: 'question',
               tab: '有异议',
-              count:5
+              count:0
           },
           {
               key: 'finished',
@@ -182,11 +171,11 @@ export default class Exchange extends PureComponent {
                                       <Row>
                                           <div className={styles.tableListForm}>{this.renderForm()}</div>
                                           {
-                                              list && list.map(item=>
-                                                  <Col md={6} sm={24} key={item.id} >
+                                              list && list.map(record=>
+                                                  <Col md={6} sm={24} key={record.id} >
                                                     <CardItem
-                                                        title={item.title}
-                                                        cover={item.cover}
+                                                        title={record.title || "未知标题"}
+                                                        cover={record.media.length>0 && record.media[0].url}
                                                         depict="心爱的球拍割舍，希望能有新主人也会善待它"
                                                         onDelete={this.state.tabpage!="deleted"?()=>{}:null}
                                                         extendData={
@@ -197,8 +186,13 @@ export default class Exchange extends PureComponent {
                                               )
                                           }
                                           <Col md={24} sm={24} style={{marginTop:10}} >
-                                              <span>共 400 条记录 第 1 / 80 页</span>
-                                              <Pagination style={{float:"right"}} showSizeChanger onShowSizeChange={this.onShowSizeChange} defaultCurrent={3} total={500} />
+                                              <span>共 {pagination.total} 条记录</span>
+                                              <Pagination
+                                                style={{float:"right"}}
+                                                showSizeChanger
+                                                onShowSizeChange={this.onShowSizeChange}
+                                                defaultCurrent={pagination.current}
+                                                total={pagination.current} />
                                           </Col>
                                       </Row>
                                   }

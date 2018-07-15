@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination,Icon} from 'antd';
 
 import StandardTable from 'components/StandardTable';
-import CardItem from './CardItem';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './index.less';
@@ -26,10 +25,7 @@ export default class Share extends PureComponent {
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'financial/present',
-    });
+
   }
 
   onTabChange=(value)=>{
@@ -67,30 +63,6 @@ export default class Share extends PureComponent {
       )
     }
 
-    renderPrompt(){
-        let {tabpage} = this.state;
-        switch(tabpage){
-            case "public":
-                return {
-                    firstData:<p>2018-01-01 00:00:00 <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
-                }
-            case "deleted":
-                return {
-                    firstData:"",
-                    secondData:
-                        <p>
-                            <span>于2018-3-19 20:50:10 被投诉删除</span>
-                            <span style={{display:"block",color:"#1890ff"}}>查看投诉记录</span>
-                        </p>
-                }
-            default:
-                return {
-                    firstData:null,
-                    secondData:null
-                }
-        }
-    }
-
     render() {
         const { dynamic:{data},loading, form } = this.props;
         const {selectedRowKeys} = this.state;
@@ -98,11 +70,11 @@ export default class Share extends PureComponent {
         const columns=[
             {
               title: '评论内容',
-              dataIndex: 'comment',
+              dataIndex: 'title',
             },
             {
               title: '评论方',
-              dataIndex: 'topic_id',
+              dataIndex: 'creator',
             },
             {
               title: '评论置换',
@@ -110,7 +82,7 @@ export default class Share extends PureComponent {
             },
             {
               title: '评论时间',
-              dataIndex: 'create_at',
+              dataIndex: 'createdAt',
             },
             {
               title: '操作',
@@ -132,6 +104,7 @@ export default class Share extends PureComponent {
                 id:i,
                 cover:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531500848047&di=1d4389597aaadaf4a049b254663dfee3&imgtype=0&src=http%3A%2F%2Fuploads.oh100.com%2Fallimg%2F1710%2F129-1G011154315334.jpg",
                 title:'JAM0000008   小瓜子',
+                creator:`用户${i}`,
                 createdAt:'2018-10-10 00:00:00',
                 applyCount:12
             })
@@ -178,7 +151,7 @@ export default class Share extends PureComponent {
                                         <StandardTable
                                           rowSelection={rowSelection}
                                           loading={loading}
-                                          data={data}
+                                          data={_data}
                                           columns={columns}
                                           onChange={this.handleTableChange}
                                         />
@@ -191,7 +164,6 @@ export default class Share extends PureComponent {
               </div>
             </Card>
           </PageHeaderLayout>
-
         )
     }
 }
