@@ -25,11 +25,23 @@ export default class Share extends PureComponent {
   }
 
   componentDidMount() {
+      this.loadComments();
+  }
 
+  loadComments(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'dynamic/fetchComments',
+        payload:{
+          type: this.state.tabpage
+        }
+      });
   }
 
   onTabChange=(value)=>{
-      this.setState({tabpage:value})
+      this.setState({tabpage:value},()=>{
+          this.loadComments();
+      })
   }
 
   onShowSizeChange=(current, pageSize)=>{
@@ -98,22 +110,6 @@ export default class Share extends PureComponent {
           onChange: this.onSelectChange,
         };
 
-        const list =[];
-        for(let i =0;i<10;i++){
-            list.push({
-                id:i,
-                cover:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531500848047&di=1d4389597aaadaf4a049b254663dfee3&imgtype=0&src=http%3A%2F%2Fuploads.oh100.com%2Fallimg%2F1710%2F129-1G011154315334.jpg",
-                title:'JAM0000008   小瓜子',
-                creator:`用户${i}`,
-                createdAt:'2018-10-10 00:00:00',
-                applyCount:12
-            })
-        }
-        //临时数据
-        const _data={
-            list:list,
-            pagination:{}
-        }
         const tabList=[
           {
               key: 'exchange',
@@ -151,7 +147,7 @@ export default class Share extends PureComponent {
                                         <StandardTable
                                           rowSelection={rowSelection}
                                           loading={loading}
-                                          data={_data}
+                                          data={data.list}
                                           columns={columns}
                                           onChange={this.handleTableChange}
                                         />

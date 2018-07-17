@@ -68,3 +68,14 @@ export async function getShareProfile(id){
       method:'GET',
     })
 }
+
+/**
+ * 获取评价列表
+ * @param  {[type]} type [description]
+ * @return {[type]}      [description]
+ */
+export async function getComments(type){
+    return request(`/api/comments/${type}/61`,{
+      method:'GET',
+    })
+}

@@ -2,6 +2,7 @@ import {
     getExchangeList,
     getActivityList,
     getShareList,
+    getComments,
     getExchangeProfile,
     getActivityProfile,
     getShareProfile
@@ -63,6 +64,14 @@ export default {
           yield put({
             type: 'info',
             payload: response.data,
+          });
+        },
+
+        *fetchComments({ payload }, { call, put }) {
+          const response = yield call(getComments, payload.type);
+          yield put({
+            type: 'save',
+            payload:{list:response.data,pagination:{total:100,current:1}}
           });
         },
 
