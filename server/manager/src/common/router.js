@@ -155,6 +155,15 @@ export const getRouterData = app => {
     '/dynamic/comment': {
       component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Comment')),
     },
+    '/dynamic/exprofile/:id': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ExchangeProfile')),
+    },
+    '/dynamic/acprofile/:id': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ActivityProfile')),
+    },
+    '/dynamic/shprofile/:id': {
+      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ShareProfile')),
+    },
     // 系统管理
     '/system/user': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/SystemManager/User')),

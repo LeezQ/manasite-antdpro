@@ -176,6 +176,7 @@ export default class Exchange extends PureComponent {
                                                     <CardItem
                                                         title={record.title || "未知标题"}
                                                         cover={record.media.length>0 && record.media[0].url}
+                                                        link = {`/dynamic/exprofile/${record.id}`}
                                                         depict="心爱的球拍割舍，希望能有新主人也会善待它"
                                                         onDelete={this.state.tabpage!="deleted"?()=>{}:null}
                                                         extendData={

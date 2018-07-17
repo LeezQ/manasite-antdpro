@@ -1,4 +1,11 @@
-import {getExchangeList,getActivityList,getShareList} from '../services/dynamic'
+import {
+    getExchangeList,
+    getActivityList,
+    getShareList,
+    getExchangeProfile,
+    getActivityProfile,
+    getShareProfile
+  } from '../services/dynamic'
 
 export default {
     namespace: 'dynamic',
@@ -19,11 +26,27 @@ export default {
           });
         },
 
+        *profileExchange({ payload }, { call, put }) {
+          const response = yield call(getExchangeProfile, payload.id);
+          yield put({
+            type: 'info',
+            payload: response.data,
+          });
+        },
+
         *fetchActivity({ payload }, { call, put }) {
           const response = yield call(getActivityList, payload);
           yield put({
             type: 'save',
             payload:{list:response.data,pagination:{total:100,current:1}}
+          });
+        },
+
+        *profileActivity({ payload }, { call, put }) {
+          const response = yield call(getActivityProfile, payload.id);
+          yield put({
+            type: 'info',
+            payload: response.data,
           });
         },
 
@@ -35,6 +58,14 @@ export default {
           });
         },
 
+        *profileShare({ payload }, { call, put }) {
+          const response = yield call(getShareProfile, payload.id);
+          yield put({
+            type: 'info',
+            payload: response.data,
+          });
+        },
+
     },
 
     reducers: {
@@ -43,6 +74,12 @@ export default {
             return {
               ...state,
               data: action.payload,
+            };
+          },
+        info(state, action) {
+            return {
+              ...state,
+              info: action.payload,
             };
           },
     },

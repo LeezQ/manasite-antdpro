@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import {Link} from 'react-router-dom';
 import {Card} from 'antd';
 import styles from './index.less';
 
@@ -8,16 +9,18 @@ class CardItem extends PureComponent {
   }
 
   render() {
-    const {title,cover,depict,operator,extendData,onDelete} = this.props;
+    const {title,cover,link="/",depict,operator,extendData,onDelete} = this.props;
 
     return (
         <div className={styles.card}>
             <header>
-                <img className={styles.cover} src={cover}/>
+                <Link to={link}>
+                  <img className={styles.cover} src={cover}/>
+                </Link>
                 {depict && <p className={styles.depict}>{depict}</p>}
             </header>
             <div className={styles.content}>
-                <h3>{title} { onDelete && <a href="javascript:void(0)" onClick={onDelete}>删除</a>}</h3>
+                <h3><Link style ={{color:"#333333"}} to={link}>{title}</Link> { onDelete && <a className={styles.deleteLink} href="javascript:void(0)" onClick={onDelete}>删除</a>}</h3>
                 {operator && <p>{operator}</p>}
                 {
                     extendData.firstData && <div>{extendData.firstData}</div>
