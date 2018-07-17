@@ -56,8 +56,8 @@ export default class ActivityProfile extends PureComponent {
 
     const commentColumns = [{
       title: '用户ID',
-      dataIndex: 'uid',
-      key: 'uid',
+      dataIndex: 'id',
+      key: 'id',
     }, {
       title: '用户昵称',
       dataIndex: 'nickname',
@@ -111,6 +111,7 @@ export default class ActivityProfile extends PureComponent {
             loading={loading}
             dataSource={comments && comments.records}
             columns={commentColumns}
+            rowKey={item => item.id}
           />
         </Card>
       </PageHeaderLayout>

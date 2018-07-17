@@ -75,7 +75,7 @@ export async function getShareProfile(id){
  * @return {[type]}      [description]
  */
 export async function getComments(type){
-    return request(`/api/comments/${type}/61`,{
+    return request(`/api/comments/${type}/60`,{
       method:'GET',
     })
 }

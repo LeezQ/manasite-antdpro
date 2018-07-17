@@ -40,6 +40,7 @@ export default class Share extends PureComponent {
 
   onTabChange=(value)=>{
       this.setState({tabpage:value},()=>{
+          console.log(this.state);
           this.loadComments();
       })
   }
@@ -82,11 +83,11 @@ export default class Share extends PureComponent {
         const columns=[
             {
               title: '评论内容',
-              dataIndex: 'title',
+              dataIndex: 'comment',
             },
             {
               title: '评论方',
-              dataIndex: 'creator',
+              dataIndex: 'nickname',
             },
             {
               title: '评论置换',
@@ -94,7 +95,7 @@ export default class Share extends PureComponent {
             },
             {
               title: '评论时间',
-              dataIndex: 'createdAt',
+              dataIndex: 'create_at',
             },
             {
               title: '操作',

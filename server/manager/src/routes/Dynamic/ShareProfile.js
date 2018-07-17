@@ -56,8 +56,8 @@ export default class ShareProfile extends PureComponent {
 
     const commentColumns = [{
       title: '用户ID',
-      dataIndex: 'uid',
-      key: 'uid',
+      dataIndex: 'id',
+      key: 'id',
     }, {
       title: '用户昵称',
       dataIndex: 'nickname',
