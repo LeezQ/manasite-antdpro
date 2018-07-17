@@ -1,14 +1,14 @@
 import React, { PureComponent,Fragment} from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination} from 'antd';
+import {Form,Card,Row,Col,Radio,Input,Button,Tabs,Badge,Pagination} from 'antd';
 
 import CardItem from './CardItem';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import Search from './Search';
 
 import styles from './index.less';
 
-const FormItem=Form.Item
 const TabPane = Tabs.TabPane;
 
 @Form.create()
@@ -19,72 +19,44 @@ const TabPane = Tabs.TabPane;
 
 export default class Exchange extends PureComponent {
 
-  state={
-    tabpage: "waiting"
-  }
+    state = {
+      type:"exchange",
+      status: "waiting",
+      uid:"-1",
+      nickname:"",
+      create_at:"",
+      title:""
+    }
 
-  componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'dynamic/fetchExchange',
-      payload:{
-        type:"exchange"
-      }
-    });
-  }
+    componentDidMount() {
+        this.loadList();
+    }
 
-  onTabChange=(value)=>{
-      this.setState({tabpage:value})
-  }
+    loadList(){
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'dynamic/fetchExchange',
+          payload:{
+            ...this.state
+          }
+        });
+    }
 
-  onShowSizeChange=(current, pageSize)=>{
-      console.log(current, pageSize);
-  }
+    onTabChange=(value)=>{
+        this.setState({status:value})
+    }
 
-    renderForm() {
-      const { getFieldDecorator } = this.props.form;
-      return(
-        <Form onSubmit={this.handleSearch} layout="inline">
-          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={9} sm={24} >
-              <FormItem label="芥摩号">
-                {getFieldDecorator('no')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={9} sm={24} >
-              <FormItem label="昵称">
-                {getFieldDecorator('nickName')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={9} sm={24}>
-              <FormItem label="发布日期">
-                {getFieldDecorator('date')(
-                  <DatePicker style={{ width: '100%' }} placeholder="请选择日期" />
-            )}
-              </FormItem>
-            </Col>
-            <Col md={9} sm={24} >
-              <FormItem label="标题">
-                {getFieldDecorator('title')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={6} sm={24} >
-              <div style={{ overflow: 'hidden' }}>
-                <span style={{ float: 'left', marginBottom: 24 }}>
-                  <Button type="primary" htmlType="submit">
-                查询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-                  </Button>
-                </span>
-              </div>
-            </Col>
-          </Row>
-        </Form>
-      )
+    onShowSizeChange=(current, pageSize)=>{
+        console.log(current, pageSize);
+    }
+
+    onSearch = (condition) => {
+        this.setState({
+            ...condition
+        },()=>{
+            console.log(this.state);
+            this.loadList();
+        })
     }
 
     renderPrompt(){
@@ -162,14 +134,16 @@ export default class Exchange extends PureComponent {
           <PageHeaderLayout title="置换管理">
             <Card bordered={false}>
               <div className={styles.tableList}>
-                <Tabs defaultActiveKey={this.state.tabpage} onChange={this.onTabChange}>
+                <Tabs defaultActiveKey={this.state.status} onChange={this.onTabChange}>
                     {
                         tabList.map(item=>
                             <TabPane tab={<span>{item.tab}<Badge className={styles.badge} count={item.count} /></span>} key={item.key}>
                                   {
-                                      this.state.tabpage==item.key &&
+                                      this.state.status==item.key &&
                                       <Row>
-                                          <div className={styles.tableListForm}>{this.renderForm()}</div>
+                                          <div className={styles.tableListForm}>
+                                              <Search onSearch={this.onSearch}/>
+                                          </div>
                                           {
                                               list && list.map(record=>
                                                   <Col md={6} sm={24} key={record.id} >
