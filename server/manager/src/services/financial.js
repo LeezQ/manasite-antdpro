@@ -23,3 +23,15 @@ export async function payrecordsData(param){
       ...param,
     })
 }
+
+/**
+ * 财务统计
+ * @param  {[type]} param [description]
+ * @return {[type]}       [description]
+ */
+export async function financialStat(param){
+    return request(`api/stats/finace`,{
+      method:'GET',
+      ...param,
+    })
+}

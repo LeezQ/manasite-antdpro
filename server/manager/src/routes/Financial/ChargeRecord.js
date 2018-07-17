@@ -7,7 +7,7 @@ import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './index.less';
- 
+
 const FormItem = Form.Item;
 
 @Form.create()
@@ -16,17 +16,35 @@ const FormItem = Form.Item;
     loading: loading.models.financial,
 }))
 
-export default class ChargeRecord extends PureComponent {  
+export default class ChargeRecord extends PureComponent {
 
   state={
     price:0,
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'financial/charges',
-    });
+      this.loadSum();
+      this.loadList();
+  }
+
+  loadList(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/charges',
+        payload:{
+            user_id: -1
+        }
+      });
+  }
+
+  loadSum(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/statSum',
+        payload:{
+            user_id: -1
+        }
+      });
   }
 
   handlePriceChange = (e) => {
@@ -36,7 +54,7 @@ export default class ChargeRecord extends PureComponent {
     const { dispatch } = this.props;
     const { formValues } = this.state;
   }
-  
+
 
   renderForm() {
       const { getFieldDecorator } = this.props.form;
@@ -77,7 +95,7 @@ export default class ChargeRecord extends PureComponent {
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
             重置
-              </Button> 
+              </Button>
             </span>
           </div>
         </Form>
@@ -85,7 +103,7 @@ export default class ChargeRecord extends PureComponent {
   }
 
   render() {
-      const { financial:{data},loading, form } = this.props; 
+      const { financial:{data,stat={}},loading, form } = this.props;
       const { getFieldDecorator } = form;
       const columns=[
           {
@@ -115,28 +133,28 @@ export default class ChargeRecord extends PureComponent {
           },
       ]
       const content=(
-        <div className={styles.pageHeaderContent}> 
+        <div className={styles.pageHeaderContent}>
           <Row>
             <Col xs={24} sm={6} >
               <div className={styles.textSecondary}>订单金额</div>
-              <div className={styles.heading}>124,543.10元</div>
+              <div className={styles.heading}>{stat.total} 元</div>
             </Col>
             <Col xs={24} sm={12} >
               <div className={styles.textSecondary}>手续费总收入</div>
-              <div className={styles.heading}>124,543.10元</div>
+              <div className={styles.heading}>{stat.service_charge} 元</div>
             </Col>
-          </Row> 
+          </Row>
         </div>
       )
       return (
         <PageHeaderLayout title="收费记录"  content={content} >
           <Card bordered={false}>
             <div className={styles.tableList}>
-              <div className={styles.tableListForm}>{this.renderForm()}</div> 
-              <StandardTable 
+              <div className={styles.tableListForm}>{this.renderForm()}</div>
+              <StandardTable
                 loading={loading}
                 data={data}
-                columns={columns}  
+                columns={columns}
                 onChange={this.handleTableChange}
               />
             </div>

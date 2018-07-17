@@ -15,17 +15,37 @@ const FormItem = Form.Item;
     loading: loading.models.financial,
 }))
 
-export default class RechargeRecord extends PureComponent { 
+export default class RechargeRecord extends PureComponent {
 
   state={
     recharge:0,
   }
+
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'financial/recharge',
-    });
+      this.loadList();
+      this.loadSum();
   }
+
+  loadList(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/recharge',
+        payload:{
+            user_id:"-1"
+        }
+      });
+  }
+
+  loadSum(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/statSum',
+        payload:{
+            user_id: -1
+        }
+      });
+  }
+
   handleRechargeTypeChange=(e)=>{
     this.setState({recharge:e.target.value})
   }
@@ -68,7 +88,7 @@ export default class RechargeRecord extends PureComponent {
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
             重置
-              </Button> 
+              </Button>
             </span>
           </div>
         </Form>
@@ -76,7 +96,7 @@ export default class RechargeRecord extends PureComponent {
     }
 
     render() {
-        const { financial:{data},loading, form } = this.props;
+        const { financial:{data,stat={}},loading, form } = this.props;
         const { getFieldDecorator } = form;
         const columns=[
           {
@@ -105,33 +125,33 @@ export default class RechargeRecord extends PureComponent {
           },
       ]
         const content=(
-          <div className={styles.pageHeaderContent}> 
+          <div className={styles.pageHeaderContent}>
             <Row>
               <Col xs={24} sm={6} >
                 <div className={styles.textSecondary}>充值总额</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.charge} 元</div>
               </Col>
               <Col xs={24} sm={6} >
                 <div className={styles.textSecondary}>当前冻结金额</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.freezed} 元</div>
               </Col>
               <Col xs={24} sm={6} >
                 <div className={styles.textSecondary}>当前会员可用金额</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.available} 元</div>
               </Col>
               <Col xs={24} sm={6} >
                 <div className={styles.textSecondary}>账户总额</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.total} 元</div>
               </Col>
-            </Row> 
+            </Row>
           </div>
         )
         return (
           <PageHeaderLayout title="充值记录" content={content} >
             <Card bordered={false}>
               <div className={styles.tableList}>
-                <div className={styles.tableListForm}>{this.renderForm()}</div> 
-                <StandardTable 
+                <div className={styles.tableListForm}>{this.renderForm()}</div>
+                <StandardTable
                   loading={loading}
                   data={data}
                   columns={columns}

@@ -15,16 +15,34 @@ const FormItem = Form.Item;
     loading: loading.models.financial,
 }))
 
-export default class Deposit extends PureComponent {  
+export default class Deposit extends PureComponent {
   state={
     freeze:0,
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'financial/deposits',
-    });
+      this.loadList();
+      this.loadSum();
+  }
+
+  loadList(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/deposits',
+        payload:{
+            user_id:"-1"
+        }
+      });
+  }
+
+  loadSum(){
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'financial/statSum',
+        payload:{
+            user_id: -1
+        }
+      });
   }
 
   handleFreezeChange=(e)=>{
@@ -70,7 +88,7 @@ export default class Deposit extends PureComponent {
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
             重置
-              </Button> 
+              </Button>
             </span>
           </div>
         </Form>
@@ -78,7 +96,7 @@ export default class Deposit extends PureComponent {
     }
 
     render() {
-        const { financial:{data},loading, form } = this.props;
+        const { financial:{data,stat={}},loading, form } = this.props;
         const { getFieldDecorator } = form;
         const columns=[
           {
@@ -109,25 +127,25 @@ export default class Deposit extends PureComponent {
           },
       ]
         const content=(
-          <div className={styles.pageHeaderContent}> 
+          <div className={styles.pageHeaderContent}>
             <Row>
               <Col xs={24} sm={6} >
                 <div className={styles.textSecondary}>当前押金总额</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.deposit} 元</div>
               </Col>
               <Col xs={24} sm={12} >
                 <div className={styles.textSecondary}>手续费总收入</div>
-                <div className={styles.heading}>124,543.10元</div>
+                <div className={styles.heading}>{stat.service_charge} 元</div>
               </Col>
-            </Row> 
+            </Row>
           </div>
         )
         return (
           <PageHeaderLayout title="押金流水" content={content} >
             <Card bordered={false}>
               <div className={styles.tableList}>
-                <div className={styles.tableListForm}>{this.renderForm()}</div> 
-                <StandardTable 
+                <div className={styles.tableListForm}>{this.renderForm()}</div>
+                <StandardTable
                   loading={loading}
                   data={data}
                   columns={columns}
