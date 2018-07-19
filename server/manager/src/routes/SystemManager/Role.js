@@ -1,21 +1,11 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Table,
-  Button,
-  Popconfirm,
-  Select,
-} from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { Card, Form, Table, Button, Popconfirm } from 'antd';
+import AddRoleForm from 'components/System/AddRoleForm';
 import styles from './TableList.less';
-import AddRoleForm from 'components/System/AddRoleForm'
-import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
-import {roles} from '../../services/system'
+import { EditableFormRow, EditableCell } from 'components/System/EditableCell';
+import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { roles } from '../../services/system';
 
 const data = [];
 for (let i = 0; i < 5; i++) {
@@ -34,21 +24,19 @@ const EditableContext = React.createContext();
   system,
   loading: loading.models.system,
 }))
-
 @Form.create()
 export default class Role extends PureComponent {
-  
-  constructor(props){
+  constructor(props) {
     super(props);
-    
-    this.state={
+
+    this.state = {
       roles: [],
       data,
-      editingKey:'',
-      list_status:'edit',
-      visible:false,
-    }
-    this.columns=[
+      editingKey: '',
+      list_status: 'edit',
+      visible: false,
+    };
+    this.columns = [
       {
         title: '角色名称',
         dataIndex: 'username',
@@ -63,64 +51,58 @@ export default class Role extends PureComponent {
       },
       {
         title: '操作',
-        dataIndex:'id',
-        render: (text,record) => {
+        dataIndex: 'id',
+        render: (text, record) => {
           const editable = this.isEditing(record);
           return (
-          <div>
-            {editable ? (
-            <span>
-              <EditableContext.Consumer>
-                {form => (
-                <a
-                  href="javascript:;"
-                  onClick={() => this.save(form, record.key)}
-                  style={{ marginRight: 8 }}
-                >
-                  保存
-                </a>)}
-                </EditableContext.Consumer>
-                  <Popconfirm
-                    title="确定要取消?"
-                    onConfirm={() => this.cancel(record.key)}
-                  >
+            <div>
+              {editable ? (
+                <span>
+                  <EditableContext.Consumer>
+                    {form => (
+                      <a
+                        href="javascript:;"
+                        onClick={() => this.save(form, record.key)}
+                        style={{ marginRight: 8 }}
+                      >
+                        保存
+                      </a>
+                    )}
+                  </EditableContext.Consumer>
+                  <Popconfirm title="确定要取消?" onConfirm={() => this.cancel(record.key)}>
                     <a>取消</a>
                   </Popconfirm>
-            </span>
-            ) : (
-            <div>
-              <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
-              <a onClick={() => this.freeze(record.key)}>冻结</a>
+                </span>
+              ) : (
+                <div>
+                  <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
+                  <a onClick={() => this.freeze(record.key)}>冻结</a>
+                </div>
+              )}
             </div>
-            )}
-          </div>
           );
         },
       },
-    ]
+    ];
   }
-  
+
   componentDidMount() {
-    roles().then((data) => {
+    roles().then(data => {
       if (data.status === 'ok') {
-        this.setState({roles: data.data.list})
+        this.setState({ roles: data.data.list });
       }
-      console.log(data)
+      console.log(data);
     });
     const { dispatch } = this.props;
     dispatch({
       type: 'system/roles',
     });
   }
-  
-  
-  
-  isEditing = (record) => {
+
+  isEditing = record => {
     return record.key === this.state.editingKey;
   };
-  freeze(key){
-  
-  }
+  freeze(key) {}
   edit(key) {
     this.setState({ editingKey: key });
   }
@@ -147,25 +129,23 @@ export default class Role extends PureComponent {
       }
     });
   }
-  handleFormReset=()=>{
+  handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-  }
-  
-  handleSelectRows = rows => {
-  
   };
-  
+
+  handleSelectRows = rows => {};
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
-    
+
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
-    
+
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
@@ -179,17 +159,17 @@ export default class Role extends PureComponent {
       type: 'system/roles',
       payload: params,
     });
-  }
-  
-  handleModalVisible=()=>{
-    this.setState({visible:true})
-  }
-  
-  hidenModal=()=>{
-    this.setState({visible:false})
-  }
-  
-  handleSave=()=>{
+  };
+
+  handleModalVisible = () => {
+    this.setState({ visible: true });
+  };
+
+  hidenModal = () => {
+    this.setState({ visible: false });
+  };
+
+  handleSave = () => {
     const form = this.formRef.props.form;
     form.validateFields((err, values) => {
       if (err) {
@@ -199,36 +179,37 @@ export default class Role extends PureComponent {
       form.resetFields();
       this.setState({ visible: false });
     });
-  }
-  
-  saveFormRef = (formRef) => {
+  };
+
+  saveFormRef = formRef => {
     this.formRef = formRef;
-  }
-  
-  renderForm(){
+  };
+
+  renderForm() {
     const { getFieldDecorator } = this.props.form;
-    return(
-    <Form onSubmit={this.handleSearch} layout="inline">
-      <div style={{ overflow: 'hidden' }}>
-        <span style={{ float: 'right', marginBottom: 24 }}>
-         <Button style={{ marginLeft: 8 }} type="primary" onClick={this.handleModalVisible}>
-           新增角色
-         </Button>
-        </span>
-      </div>
-    </Form>);
+    return (
+      <Form onSubmit={this.handleSearch} layout="inline">
+        <div style={{ overflow: 'hidden' }}>
+          <span style={{ float: 'right', marginBottom: 24 }}>
+            <Button style={{ marginLeft: 8 }} type="primary" onClick={this.handleModalVisible}>
+              新增角色
+            </Button>
+          </span>
+        </div>
+      </Form>
+    );
   }
-  
-  render(){
-    const {  data,loading } = this.props;
-    const { list_status,visible }=this.state
+
+  render() {
+    const { data, loading } = this.props;
+    const { list_status, visible } = this.state;
     const components = {
       body: {
         row: EditableFormRow,
         cell: EditableCell,
       },
     };
-    const columns = this.columns.map((col) => {
+    const columns = this.columns.map(col => {
       if (!col.editable) {
         return col;
       }
@@ -236,36 +217,36 @@ export default class Role extends PureComponent {
         ...col,
         onCell: record => ({
           record,
-          inputType: col.dataIndex ===  'role'?'Select':'text',
+          inputType: col.dataIndex === 'role' ? 'Select' : 'text',
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
         }),
       };
     });
-    
-    return(
-    <PageHeaderLayout title="角色管理">
-      <Card bordered={false}>
-        <div className={styles.tableList}>
-          <div className={styles.tableListForm}>{this.renderForm()}</div>
-          
-          <Table
-          components={components}
-          bordered
-          dataSource={this.state.roles}
-          columns={columns}
-          rowClassName="editable-row"
-          />
-        </div>
-      </Card>
-      <AddRoleForm
-      wrappedComponentRef={this.saveFormRef}
-      visible={visible}
-      onCancel={this.hidenModal}
-      onCreate={this.handleSave}
-      />
-    </PageHeaderLayout>
-    )
+
+    return (
+      <PageHeaderLayout title="角色管理">
+        <Card bordered={false}>
+          <div className={styles.tableList}>
+            <div className={styles.tableListForm}>{this.renderForm()}</div>
+
+            <Table
+              components={components}
+              bordered
+              dataSource={this.state.roles}
+              columns={columns}
+              rowClassName="editable-row"
+            />
+          </div>
+        </Card>
+        <AddRoleForm
+          wrappedComponentRef={this.saveFormRef}
+          visible={visible}
+          onCancel={this.hidenModal}
+          onCreate={this.handleSave}
+        />
+      </PageHeaderLayout>
+    );
   }
 }
