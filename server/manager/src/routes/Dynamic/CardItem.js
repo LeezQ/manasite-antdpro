@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import {Link} from 'react-router-dom';
-import {Card} from 'antd';
+import {Card,Popconfirm} from 'antd';
 import styles from './index.less';
 
 class CardItem extends PureComponent {
@@ -20,7 +20,16 @@ class CardItem extends PureComponent {
                 {depict && <p className={styles.depict}>{depict}</p>}
             </header>
             <div className={styles.content}>
-                <h3><Link style ={{color:"#333333"}} to={link}>{title}</Link> { onDelete && <a className={styles.deleteLink} href="javascript:void(0)" onClick={onDelete}>删除</a>}</h3>
+                <h3><Link style ={{color:"#333333"}} to={link}>{title}</Link>
+                    { onDelete &&
+                      <Popconfirm
+                          title="你确定要删除么？"
+                          okText="确定" cancelText="取消"
+                          onConfirm={()=> onDelete()}
+                          >
+                          <a className={styles.deleteLink} href="javascript:void(0)">删除</a>
+                      </Popconfirm>
+                    }</h3>
                 {operator && <p>{operator}</p>}
                 {
                     extendData.firstData && <div>{extendData.firstData}</div>

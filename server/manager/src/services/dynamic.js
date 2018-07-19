@@ -79,3 +79,16 @@ export async function getComments(type){
       method:'GET',
     })
 }
+
+/**
+ * 删除动态
+ * @param  {[type]} id [description]
+ * @return {[type]}    [description]
+ */
+export async function deleteDynamic(param){
+  console.log(param);
+  return request(`/api/discover/${param.id}`,{
+    method:'delete',
+    ...param
+  })
+}

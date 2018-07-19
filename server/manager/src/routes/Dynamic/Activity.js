@@ -57,6 +57,17 @@ export default class Activity extends PureComponent {
         })
     }
 
+    onDelete=(id)=>{
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'dynamic/delete',
+          payload:{
+            id:id,
+            reason:1
+          }
+        });
+    }
+
     renderPrompt(){
         let {tabpage} = this.state;
         switch(tabpage){
@@ -130,7 +141,7 @@ export default class Activity extends PureComponent {
                                                         cover={record.media.length>0 && record.media[0].url}
                                                         link = {`/dynamic/acprofile/${record.id}`}
                                                         depict="心爱的球拍割舍，希望能有新主人也会善待它"
-                                                        onDelete={this.state.tabpage!="deleted"?()=>{}:null}
+                                                        onDelete={this.state.tabpage!="deleted"?()=>this.onDelete(record.id):null}
                                                         extendData={
                                                             this.renderPrompt()
                                                         }
