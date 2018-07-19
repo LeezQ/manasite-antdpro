@@ -9,5 +9,5 @@ export default {
   'GET /api/(.*)': 'http://120.24.212.29:3000/api/v1/',
   'Delete /api/(.*)': 'http://120.24.212.29:3000/api/v1/',
   'POST /api/(.*)': 'http://120.24.212.29:3000/api/v1/',
-  'PUT /api/(.*)': 'http://120.24.212.29:3000/api/v1/'
+  'PUT /api/(.*)': 'http://120.24.212.29:3000/api/v1/',
 };
