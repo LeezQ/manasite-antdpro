@@ -41,6 +41,7 @@ class EditableCell extends React.Component {
   };
   render() {
     const { editing, dataIndex, title, inputType, record, index, ...restProps } = this.props;
+    console.log(123, dataIndex);
     return (
       <EditableContext.Consumer>
         {form => {
@@ -49,7 +50,7 @@ class EditableCell extends React.Component {
             <td {...restProps}>
               {editing ? (
                 <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(dataIndex, {
+                  {getFieldDecorator(`name_${dataIndex}`, {
                     rules: [
                       {
                         required: true,
@@ -87,7 +88,8 @@ export default class User extends PureComponent {
         title: '用户名',
         editable: true,
         key: 'uid',
-        render: record => {
+        dataIndex: 'uid',
+        render: (text, record) => {
           return (
             <div>
               {record.uid} {record.isDisabled && <Tag color="orange">orange</Tag>}
@@ -198,7 +200,6 @@ export default class User extends PureComponent {
       }
       const newData = [...this.state.data];
       const index = newData.findIndex(item => key === item.uid);
-      debugger;
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {

@@ -1,63 +1,103 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Table,
-  Button,
-  Popconfirm,
-  Select,
-} from 'antd';
+import { Card, Form } from 'antd';
+import EditSourceForm from 'components/System/EditSourceForm.js';
+
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './TableList.less';
-import AddRoleForm from 'components/System/AddRoleForm'
-import {EditableFormRow,EditableCell} from 'components/System/EditableCell'
-import {roles} from '../../services/system'
-
-
-const FormItem = Form.Item;
-const EditableContext = React.createContext();
+import styles from './Source.less';
+import { source } from '../../services/system';
 
 @connect(({ system, loading }) => ({
   system,
   loading: loading.models.system,
 }))
-
 @Form.create()
 export default class Source extends PureComponent {
-  
-  constructor(props){
+  constructor(props) {
     super(props);
-    
-    this.state={
-      roles: [],
-    }
+
+    this.state = {
+      sourceData: {},
+      visible: false,
+    };
   }
-  
+
   componentDidMount() {
-    roles().then((data) => {
-      if (data.status === 'ok') {
-        this.setState({roles: data.data.list})
-      }
-      console.log(data)
-    });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'system/roles',
-    });
+    // source().then(data => {
+    //   if (data.status === 'ok') {
+    //     // this.setState({ sourceData: data.data.list });
+    //   }
+    // });
   }
-  
-  render(){
-    
-    return(
-    <PageHeaderLayout title="资源管理">
-      <Card bordered={false}>
-        123
-      </Card>
-    </PageHeaderLayout>
-    )
+
+  showEdit = id => {
+    console.log(id);
+    this.setState({
+      visible: true,
+    });
+  };
+
+  render() {
+    return (
+      <PageHeaderLayout title="资源管理">
+        <Card bordered={false}>
+          <div className={styles.wrap}>
+            <div>
+              <h2 className={styles.title}>一级菜单</h2>
+              <ul>
+                <li className={styles.current}>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+                <li>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+                <li>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className={styles.title}>一级菜单</h2>
+              <ul>
+                <li>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+                <li>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+                <li>
+                  一级菜单{' '}
+                  <a href="javascript:;" onClick={() => this.showEdit()}>
+                    编辑
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </Card>
+        <EditSourceForm
+          visible={this.state.visible}
+          data={this.state.sourceData}
+          onCancel={() => {
+            this.setState({ visible: false });
+          }}
+        />
+      </PageHeaderLayout>
+    );
   }
 }
