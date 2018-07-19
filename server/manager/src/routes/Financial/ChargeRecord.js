@@ -32,7 +32,8 @@ export default class ChargeRecord extends PureComponent {
       dispatch({
         type: 'financial/charges',
         payload:{
-            user_id: -1
+            user_id: -1,
+            ...this.state
         }
       });
   }
@@ -42,7 +43,7 @@ export default class ChargeRecord extends PureComponent {
       dispatch({
         type: 'financial/statSum',
         payload:{
-            user_id: -1
+            user_id: -1,
         }
       });
   }
@@ -50,9 +51,36 @@ export default class ChargeRecord extends PureComponent {
   handlePriceChange = (e) => {
     this.setState({ price: e.target.value });
   }
+
   handleTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
+  }
+
+  handleSearch = (e) => {
+      e.preventDefault();
+      this.props.form.validateFields((err, values) => {
+          if(err)
+              return;
+
+          let _keyword={};
+
+          if(values["uid"])
+              _keyword['uid'] = values["uid"];
+
+          if(values["no"])
+              _keyword['no'] = values["no"];
+
+          if(values["date"])
+              _keyword['date'] = values['date'].format('YYYY-MM-DD');
+
+          this.setState({
+              ...this.state,
+              ..._keyword
+          },()=>{
+              this.loadList();
+          })
+      });
   }
 
 
@@ -63,7 +91,7 @@ export default class ChargeRecord extends PureComponent {
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
             <Col md={8} sm={24} >
               <FormItem label="芥摩号">
-                {getFieldDecorator('no')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('uid')(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
             <Col md={8} sm={24} >

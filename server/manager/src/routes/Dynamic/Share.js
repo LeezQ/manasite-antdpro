@@ -24,9 +24,6 @@ export default class Share extends PureComponent {
         type:"share",
         status: "public",
         uid:"-1",
-        nickname:"",
-        create_at:"",
-        title:""
     }
 
     componentDidMount() {

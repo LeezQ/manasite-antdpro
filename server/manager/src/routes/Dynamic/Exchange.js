@@ -23,9 +23,6 @@ export default class Exchange extends PureComponent {
       type:"exchange",
       status: "waiting",
       uid:"-1",
-      nickname:"",
-      create_at:"",
-      title:""
     }
 
     componentDidMount() {
@@ -57,6 +54,10 @@ export default class Exchange extends PureComponent {
             console.log(this.state);
             this.loadList();
         })
+    }
+
+    onDelete=(id)=>{
+
     }
 
     renderPrompt(){

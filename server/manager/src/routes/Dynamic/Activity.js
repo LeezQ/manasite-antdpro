@@ -24,9 +24,6 @@ export default class Activity extends PureComponent {
         type:"activity",
         status: "process",
         uid:"-1",
-        nickname:"",
-        create_at:"",
-        title:""
     }
 
     componentDidMount() {

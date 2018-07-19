@@ -26,7 +26,7 @@ export default class Search extends React.Component{
             if(values["create_at"])
                 _keyword['create_at'] = values['create_at'].format('YYYY-MM-DD');
 
-            if(values["create_at"])
+            if(values["title"])
                 _keyword['title'] = values["title"];
 
             if(this.props.onSearch)

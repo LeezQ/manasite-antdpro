@@ -31,7 +31,8 @@ export default class RechargeRecord extends PureComponent {
       dispatch({
         type: 'financial/recharge',
         payload:{
-            user_id:"-1"
+            user_id:"-1",
+            ...this.state
         }
       });
   }
@@ -48,6 +49,32 @@ export default class RechargeRecord extends PureComponent {
 
   handleRechargeTypeChange=(e)=>{
     this.setState({recharge:e.target.value})
+  }
+
+  handleSearch = (e) => {
+      e.preventDefault();
+      this.props.form.validateFields((err, values) => {
+          if(err)
+              return;
+
+          let _keyword={};
+
+          if(values["uid"])
+              _keyword['uid'] = values["uid"];
+
+          if(values["no"])
+              _keyword['no'] = values["no"];
+
+          if(values["date"])
+              _keyword['date'] = values['date'].format('YYYY-MM-DD');
+
+          this.setState({
+              ...this.state,
+              ..._keyword
+          },()=>{
+              this.loadList();
+          })
+      });
   }
     renderForm() {
       const { getFieldDecorator } = this.props.form;
