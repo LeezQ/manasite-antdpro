@@ -7,6 +7,22 @@ export async function roles(param) {
   });
 }
 
+// roles
+export async function addRole(param) {
+  return request(`api/system/roles`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
+// roles
+export async function updateRole(roleId, param) {
+  return request(`api/system/roles/${roleId}`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
 export async function getMenu(param) {
   return request(`api/system/menus`, {
     method: 'GET',

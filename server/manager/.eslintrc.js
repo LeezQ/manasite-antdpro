@@ -63,6 +63,7 @@ module.exports = {
     'no-debugger': [0],
     'react/no-multi-comp': [0],
     'prefer-destructuring': [0],
+    'no-plusplus': [0],
   },
   parserOptions: {
     ecmaFeatures: {

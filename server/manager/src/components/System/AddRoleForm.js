@@ -2,30 +2,41 @@
    由zhaojunzhe于2018/7/14创建
 */
 import React, { Component } from 'react';
-import { Checkbox, Form, Input, Modal, Button, Icon, Dropdown, Menu, Row, Col } from 'antd';
+import { Checkbox, Form, Input, Modal, Select, Row, Col, Tree } from 'antd';
 import { getChannelList } from '../../services/channel';
-import { getMenu, roles } from '../../services/system';
+import { getMenu, addRole, updateRole } from '../../services/system';
 import ProvinceSelect from './ProvinceSelect.js';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const TreeNode = Tree.TreeNode;
+const Option = Select.Option;
 
 class AddRoleForm extends Component {
   state = {
     channels: [],
-    menu: [],
+    menus: [],
+    checkedMenus: [],
   };
   componentDidMount() {
     this.getChannel();
     this.getMenu();
   }
+
+  onCheck = checkedKeys => {
+    this.setState({
+      checkedMenus: checkedKeys,
+    });
+  };
+
   getMenu = () => {
     getMenu().then(data => {
       if (data.status === 'ok') {
-        this.setState({ menu: data.data.list });
+        this.setState({ menus: data.data.records });
       }
     });
   };
+
   getChannel = () => {
     getChannelList().then(data => {
       if (data.status === 'ok') {
@@ -39,45 +50,50 @@ class AddRoleForm extends Component {
       }
     });
   };
-  handleChanelChange = checkedValues => {
-    console.log(checkedValues);
-  };
-  handleParentChange = e => {
-    console.log(e);
-  };
   handleChange = value => {
     const obj = {};
     obj.province = value[0];
     obj.city = value[1];
-    console.log(obj);
   };
+
   handleSubmit = () => {
+    const { checkedMenus } = this.state;
+    const { role } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log('Received values of form: ', values);
       if (!err) {
-        const obj = {};
-        obj.name = values.name;
+        const obj = values;
         obj.location = {
           province: '河北省',
           city: '石家庄市',
         };
-        obj.channels = values.channels;
-        roles(obj).then(data => {
-          console.log(data);
-          this.props.onCreate();
+
+        obj.privileges = checkedMenus.map(val => {
+          return parseInt(val, 10);
         });
-        console.log('Received values of form: ', values);
+        if (typeof role.id !== 'undefined') {
+          updateRole(role.id, obj).then(() => {
+            this.props.onCreate();
+          });
+        } else {
+          addRole(obj).then(() => {
+            this.props.onCreate();
+          });
+        }
       }
     });
   };
   render() {
-    const { channels } = this.state;
-    const { visible, form, onCancel } = this.props;
+    const { channels, menus } = this.state;
+    const { visible, form, onCancel, role } = this.props;
     const { getFieldDecorator } = form;
-    const menu = (
-      <Menu onClick={this.handleParentChange}>
-        <Menu.Item key="0">测试</Menu.Item>
-      </Menu>
-    );
+
+    console.log(role.parent, menus);
+
+    role.privileges = (role.privileges || []).map(privilege => {
+      return `${privilege}`;
+    });
+
     return (
       <Modal
         visible={visible}
@@ -90,31 +106,37 @@ class AddRoleForm extends Component {
         <Form layout="vertical">
           <FormItem label="角色名称">
             {getFieldDecorator('name', {
+              initialValue: role.name || '',
               rules: [{ required: true, message: '请输入角色名称' }],
             })(<Input />)}
           </FormItem>
 
           <FormItem label="上级角色">
-            {getFieldDecorator('parent', {})(
-              <Dropdown overlay={menu} trigger={['click']}>
-                <Button>
-                  请选择 <Icon type="down" />
-                </Button>
-              </Dropdown>
+            {getFieldDecorator('parent', {
+              initialValue: role.parent || '',
+            })(
+              <Select style={{ width: '100%' }} placeholder="选择角色">
+                {[1, 2, 3].map(i => {
+                  return (
+                    <Option key={`parent-${i}`} value={i}>
+                      {`parent-${i}`}
+                    </Option>
+                  );
+                })}
+              </Select>
             )}
           </FormItem>
 
           <FormItem label="所在地区">
-            {getFieldDecorator('default_region', {})(
-              <ProvinceSelect handleChange={this.handleChange} />
-            )}
+            <ProvinceSelect handleChange={this.handleChange} />
           </FormItem>
 
           <FormItem label="管理频道">
             {getFieldDecorator('channels', {
               rules: [{ required: true, message: '请选择频道' }],
+              initialValue: role.channels || [],
             })(
-              <CheckboxGroup onChange={this.handleChanelChange}>
+              <CheckboxGroup>
                 <Row>
                   {channels.map(v => {
                     return (
@@ -129,10 +151,21 @@ class AddRoleForm extends Component {
           </FormItem>
 
           <FormItem label="选择资源">
-            {getFieldDecorator('privileges', {
-              initialValue: this.state.menu,
-              rules: [{ required: true, message: '请选择资源' }],
-            })(<Input />)}
+            <Tree
+              checkable
+              onCheck={this.onCheck}
+              defaultExpandAll
+              defaultCheckedKeys={role.privileges || []}
+            >
+              <TreeNode title="会员管理" key="0">
+                <TreeNode title="操作" key="1" />
+                <TreeNode title="操作2" key="2" />
+              </TreeNode>
+              <TreeNode title="兴趣频道管理" key="3">
+                <TreeNode title="操作1" key="4" />
+                <TreeNode title="操作2" key="5" />
+              </TreeNode>
+            </Tree>
           </FormItem>
         </Form>
       </Modal>

@@ -1,24 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Form, Table, Button, Popconfirm } from 'antd';
+import { Card, Form, Table, Button } from 'antd';
 import AddRoleForm from 'components/System/AddRoleForm';
+
 import styles from './TableList.less';
-import { EditableFormRow, EditableCell } from 'components/System/EditableCell';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { roles } from '../../services/system';
-
-const data = [];
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i.toString(),
-    username: `Edrwards ${i}`,
-    mobile: '13169871233',
-    name: `name_is_${i}`,
-  });
-}
-
-const FormItem = Form.Item;
-const EditableContext = React.createContext();
 
 @connect(({ system, loading }) => ({
   system,
@@ -31,54 +18,35 @@ export default class Role extends PureComponent {
 
     this.state = {
       roles: [],
-      data,
-      editingKey: '',
-      list_status: 'edit',
+      role: {},
       visible: false,
     };
     this.columns = [
       {
         title: '角色名称',
-        dataIndex: 'username',
+        dataIndex: 'name',
       },
       {
         title: '上级角色',
-        dataIndex: 'mobile',
+        key: 'parent',
+        render: record => {
+          return <div>{record.parent}</div>;
+        },
       },
       {
         title: '角色属性',
-        dataIndex: 'name',
+        key: 'privileges',
+        render: record => {
+          return <div>{record.channels.join(', ')}</div>;
+        },
       },
       {
         title: '操作',
         dataIndex: 'id',
         render: (text, record) => {
-          const editable = this.isEditing(record);
           return (
             <div>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.save(form, record.key)}
-                        style={{ marginRight: 8 }}
-                      >
-                        保存
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm title="确定要取消?" onConfirm={() => this.cancel(record.key)}>
-                    <a>取消</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <div>
-                  <a onClick={() => this.edit(record.key)}>编辑</a> &nbsp;
-                  <a onClick={() => this.freeze(record.key)}>冻结</a>
-                </div>
-              )}
+              <a onClick={() => this.edit(record)}>编辑</a> &nbsp;
             </div>
           );
         },
@@ -87,82 +55,53 @@ export default class Role extends PureComponent {
   }
 
   componentDidMount() {
-    roles().then(data => {
+    this.fetchData({});
+  }
+
+  fetchData = params => {
+    roles(params).then(data => {
       if (data.status === 'ok') {
         this.setState({ roles: data.data.list });
       }
-      console.log(data);
     });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'system/roles',
-    });
+  };
+
+  edit(role) {
+    this.setState({ visible: true, role });
   }
 
-  isEditing = record => {
-    return record.key === this.state.editingKey;
-  };
-  freeze(key) {}
-  edit(key) {
-    this.setState({ editingKey: key });
-  }
-  cancel = () => {
-    this.setState({ editingKey: '' });
-  };
-  save(form, key) {
-    form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ data: newData, editingKey: '' });
-      } else {
-        newData.push(data);
-        this.setState({ data: newData, editingKey: '' });
-      }
-    });
-  }
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
+    const { form } = this.props;
     form.resetFields();
   };
 
-  handleSelectRows = rows => {};
+  // handleStandardTableChange = (pagination, filtersArg, sorter) => {
+  //   const { dispatch } = this.props;
+  //   const { formValues } = this.state;
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
+  //   const filters = Object.keys(filtersArg).reduce((obj, key) => {
+  //     const newObj = { ...obj };
+  //     newObj[key] = getValue(filtersArg[key]);
+  //     return newObj;
+  //   }, {});
 
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-    dispatch({
-      type: 'system/roles',
-      payload: params,
-    });
-  };
+  //   const params = {
+  //     currentPage: pagination.current,
+  //     pageSize: pagination.pageSize,
+  //     ...formValues,
+  //     ...filters,
+  //   };
+  //   if (sorter.field) {
+  //     params.sorter = `${sorter.field}_${sorter.order}`;
+  //   }
+  //   dispatch({
+  //     type: 'system/roles',
+  //     payload: params,
+  //   });
+  // };
 
   handleModalVisible = () => {
-    this.setState({ visible: true });
+    this.setState({ visible: true, role: {} });
   };
 
   hidenModal = () => {
@@ -170,15 +109,8 @@ export default class Role extends PureComponent {
   };
 
   handleSave = () => {
-    const form = this.formRef.props.form;
-    form.validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      console.log('Received values of form: ', values);
-      form.resetFields();
-      this.setState({ visible: false });
-    });
+    this.setState({ visible: false });
+    this.fetchData({});
   };
 
   saveFormRef = formRef => {
@@ -186,7 +118,6 @@ export default class Role extends PureComponent {
   };
 
   renderForm() {
-    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <div style={{ overflow: 'hidden' }}>
@@ -201,29 +132,7 @@ export default class Role extends PureComponent {
   }
 
   render() {
-    const { data, loading } = this.props;
-    const { list_status, visible } = this.state;
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell,
-      },
-    };
-    const columns = this.columns.map(col => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex === 'role' ? 'Select' : 'text',
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: this.isEditing(record),
-        }),
-      };
-    });
+    const { visible } = this.state;
 
     return (
       <PageHeaderLayout title="角色管理">
@@ -232,10 +141,10 @@ export default class Role extends PureComponent {
             <div className={styles.tableListForm}>{this.renderForm()}</div>
 
             <Table
-              components={components}
               bordered
               dataSource={this.state.roles}
-              columns={columns}
+              columns={this.columns}
+              rowKey={record => record.id}
               rowClassName="editable-row"
             />
           </div>
@@ -245,6 +154,7 @@ export default class Role extends PureComponent {
           visible={visible}
           onCancel={this.hidenModal}
           onCreate={this.handleSave}
+          role={this.state.role}
         />
       </PageHeaderLayout>
     );
