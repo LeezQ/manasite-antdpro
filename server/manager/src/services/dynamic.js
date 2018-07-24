@@ -6,7 +6,7 @@ import request from '../utils/request';
  * @return {[type]}       [description]
  */
 export async function getExchangeList(param){
-    return request('/api/discover/channel',{
+    return request('/api/discover/search',{
       method:'GET',
       ...param
     })
@@ -29,7 +29,7 @@ export async function getExchangeProfile(id){
  * @return {[type]}       [description]
  */
 export async function getActivityList(param){
-    return request('/api/discover/channel',{
+    return request('/api/discover/search',{
       method:'GET',
       ...param
     })
@@ -52,7 +52,7 @@ export async function getActivityProfile(id){
  * @return {[type]}       [description]
  */
 export async function getShareList(param){
-    return request('/api/discover/channel',{
+    return request('/api/discover/search',{
       method:'GET',
       ...param
     })
@@ -86,7 +86,6 @@ export async function getComments(type){
  * @return {[type]}    [description]
  */
 export async function deleteDynamic(param){
-  console.log(param);
   return request(`/api/discover/${param.id}`,{
     method:'delete',
     ...param

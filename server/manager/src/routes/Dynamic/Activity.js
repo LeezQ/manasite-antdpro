@@ -22,7 +22,7 @@ export default class Activity extends PureComponent {
 
     state = {
         type:"activity",
-        status: "process",
+        activity_state: "process",
         uid:"-1",
     }
 
@@ -41,7 +41,7 @@ export default class Activity extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({status:value})
+        this.setState({activity_state:value})
     }
 
     onShowSizeChange=(current, pageSize)=>{
@@ -68,23 +68,23 @@ export default class Activity extends PureComponent {
         });
     }
 
-    renderPrompt(){
-        let {tabpage} = this.state;
-        switch(tabpage){
+    renderPrompt(record){
+        let {activity_state} = this.state;
+        switch(activity_state){
             case "process":
                 return {
-                    firstData:<p>2018-01-01 00:00:00 <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
+                    firstData:<p>{moment(record.created_at).format("YYYY-MM-DD HH:mm:ss")} <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
                 }
             case "ended":
                 return {
-                    firstData:<p>2018-01-01 00:00:00</p>
+                    firstData:<p>{moment(record.created_at).format("YYYY-MM-DD HH:mm:ss")}</p>
                 };
             case "deleted":
                 return {
                     firstData:"",
                     secondData:
                         <p>
-                            <span>于2018-3-19 20:50:10 被投诉删除</span>
+                            <span>于{moment(record.created_at).format("YYYY-MM-DD HH:mm:ss")} 被投诉删除</span>
                             <span style={{display:"block",color:"#1890ff"}}>查看投诉记录</span>
                         </p>
                 }
@@ -123,12 +123,12 @@ export default class Activity extends PureComponent {
           <PageHeaderLayout title="活动管理">
             <Card bordered={false}>
               <div className={styles.tableList}>
-                <Tabs defaultActiveKey={this.state.status} onChange={this.onTabChange}>
+                <Tabs defaultActiveKey={this.state.activity_state} onChange={this.onTabChange}>
                     {
                         tabList.map(item=>
                             <TabPane tab={<span>{item.tab}<Badge className={styles.badge} count={item.count} /></span>} key={item.key}>
                                   {
-                                      this.state.status==item.key &&
+                                      this.state.activity_state==item.key &&
                                       <Row>
                                           <div className={styles.tableListForm}>
                                             <Search onSearch={this.onSearch}/>
@@ -138,12 +138,12 @@ export default class Activity extends PureComponent {
                                                   <Col md={6} sm={24} key={record.id} >
                                                     <CardItem
                                                         title={record.title || "未知标题"}
-                                                        cover={record.media.length>0 && record.media[0].url}
+                                                        cover={record.avatar}
                                                         link = {`/dynamic/acprofile/${record.id}`}
                                                         depict="心爱的球拍割舍，希望能有新主人也会善待它"
                                                         onDelete={this.state.tabpage!="deleted"?()=>this.onDelete(record.id):null}
                                                         extendData={
-                                                            this.renderPrompt()
+                                                            this.renderPrompt(record)
                                                         }
                                                       />
                                                   </Col>

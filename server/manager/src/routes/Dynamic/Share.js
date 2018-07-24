@@ -68,19 +68,19 @@ export default class Share extends PureComponent {
         });
     }
 
-    renderPrompt(){
-        let {tabpage} = this.state;
-        switch(tabpage){
+    renderPrompt(record){
+        let {status} = this.state;
+        switch(status){
             case "public":
                 return {
-                    firstData:<p>2018-01-01 00:00:00 <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
+                    firstData:<p>{moment(record.created_at).format("YYYY-MM-DD HH:mm:ss")} <span style={{float:"right",color:"#1890ff"}}>已参加：100人</span></p>,
                 }
             case "deleted":
                 return {
                     firstData:"",
                     secondData:
                         <p>
-                            <span>于2018-3-19 20:50:10 被投诉删除</span>
+                            <span>于{moment(record.created_at).format("YYYY-MM-DD HH:mm:ss")} 被投诉删除</span>
                             <span style={{display:"block",color:"#1890ff"}}>查看投诉记录</span>
                         </p>
                 }
@@ -129,12 +129,12 @@ export default class Share extends PureComponent {
                                                   <Col md={6} sm={24} key={record.id} >
                                                     <CardItem
                                                         title={record.title || "未知标题"}
-                                                        cover={record.media.length>0 && record.media[0].url}
+                                                        cover={record.avatar}
                                                         link = {`/dynamic/shprofile/${record.id}`}
                                                         depict="心爱的球拍割舍，希望能有新主人也会善待它"
                                                         onDelete={this.state.tabpage!="deleted"?()=>this.onDelete(record.id):null}
                                                         extendData={
-                                                            this.renderPrompt()
+                                                            this.renderPrompt(record)
                                                         }
                                                       />
                                                   </Col>
