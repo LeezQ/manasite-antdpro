@@ -23,8 +23,8 @@ export default class Search extends React.Component{
             if(values["nickname"])
                 _keyword['nickname'] = values["nickname"];
 
-            if(values["create_at"])
-                _keyword['create_at'] = values['create_at'].format('YYYY-MM-DD');
+            if(values["time_start"])
+                _keyword['time_start'] = values['time_start'].format('YYYY-MM-DD');
 
             if(values["title"])
                 _keyword['title'] = values["title"];
@@ -53,7 +53,7 @@ export default class Search extends React.Component{
             <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
               <Col md={9} sm={24}>
                 <FormItem label="发布日期">
-                  {getFieldDecorator('create_at')(
+                  {getFieldDecorator('time_start')(
                     <DatePicker style={{ width: '100%' }} placeholder="请选择日期" />
               )}
                 </FormItem>
