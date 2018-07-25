@@ -115,7 +115,7 @@ export default class Share extends PureComponent {
           {
               key: 'exchange',
               tab: '置换评论',
-              count:10
+              count:0
           },
           {
               key: 'activity',
