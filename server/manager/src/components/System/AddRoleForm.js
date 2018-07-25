@@ -39,7 +39,7 @@ class AddRoleForm extends Component {
 
   getChannel = () => {
     getChannelList().then(data => {
-      if (data.status === 'ok') {
+      if (data && data.status === 'ok') {
         const channels = data.data.map(item => {
           const obj = {};
           obj.label = item.name;

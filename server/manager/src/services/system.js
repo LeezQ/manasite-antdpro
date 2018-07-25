@@ -23,10 +23,31 @@ export async function updateRole(roleId, param) {
   });
 }
 
+// create menu
+export async function addMenu(param) {
+  return request(`api/system/menus`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
 export async function getMenu(param) {
   return request(`api/system/menus`, {
     method: 'GET',
     ...param,
+  });
+}
+
+export async function updateMenu(param, id) {
+  return request(`api/system/menus/${id}`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
+export async function deleteMenu(id) {
+  return request(`api/system/menus/${id}`, {
+    method: 'DELETE',
   });
 }
 
@@ -50,6 +71,17 @@ export async function getSortRules(param) {
  */
 export async function dictionaries(param) {
   return request(`/api/system/dictionaries`, {
+    method: 'GET',
+    ...param,
+  });
+}
+
+/**
+ * 提交评价
+ * @param {*} param
+ */
+export async function saveDictionaries(param, id) {
+  return request(`/api/system/dictionaries/${id}`, {
     method: 'GET',
     ...param,
   });
