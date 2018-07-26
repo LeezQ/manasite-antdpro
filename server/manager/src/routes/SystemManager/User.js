@@ -165,7 +165,7 @@ export default class User extends PureComponent {
 
   componentDidMount() {
     getUsersList().then(data => {
-      if (data.status === 'ok') {
+      if (data && data.status === 'ok') {
         console.log(data.data);
         this.setState({ data: data.data.list });
       }

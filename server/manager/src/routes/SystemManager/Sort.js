@@ -42,9 +42,11 @@ export default class Sort extends PureComponent {
   }
   componentDidMount() {
     getSortRules().then(data => {
-      this.setState({
-        data: data.data.list,
-      });
+      if (data) {
+        this.setState({
+          data: data.data.list,
+        });
+      }
     });
   }
 
