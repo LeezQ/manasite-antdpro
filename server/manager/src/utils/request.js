@@ -90,14 +90,24 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-  const errortext = codeMessage[response.status] || response.statusText;
+
+  let errortext = codeMessage[response.status] || response.statusText;
+  let message = `请求错误 ${response.status}: ${response.url}`;
+
+  if(response.status == 401 || response.status == 403){
+      errortext="登录超时，请重新登录";
+      message="超时提示";
+  }
+
   notification.error({
-    message: `请求错误 ${response.status}: ${response.url}`,
+    message: message,
     description: errortext,
   });
+
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
+
   throw error;
 }
 
@@ -168,6 +178,7 @@ export default function request(url, options) {
         });
         return;
       }
+
       if (status === 403) {
         //dispatch(routerRedux.push('/exception/403'));
         dispatch({
