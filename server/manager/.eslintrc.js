@@ -65,6 +65,7 @@ module.exports = {
     'prefer-destructuring': [0],
     'no-plusplus': [0],
     'react/sort-comp': [0],
+    'react/no-array-index-key': [0],
   },
   parserOptions: {
     ecmaFeatures: {

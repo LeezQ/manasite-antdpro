@@ -37,14 +37,13 @@ export default class Source extends PureComponent {
     getMenu().then(data => {
       if (data) {
         this.setState({
-          data: data.data.list,
+          data: data.data,
         });
       }
     });
   };
 
   showEdit = item => {
-    console.log(item);
     this.setState({
       visible: true,
       currentItem: item,
@@ -75,6 +74,38 @@ export default class Source extends PureComponent {
     });
   };
 
+  renderItems = (data, current, dom = [], n = 1) => {
+    dom.push(
+      <div key={data[current].id}>
+        <h2 className={styles.title}>{n}级菜单</h2>
+        <ul>
+          {data.map(item => {
+            return (
+              <li key={item.id}>
+                {item.name}
+                <a
+                  href="javascript:;"
+                  onClick={() => this.showEdit(item)}
+                  style={{ marginLeft: 3, fontSize: 12 }}
+                >
+                  编辑
+                </a>
+                <a href="javascript:;" onClick={() => this.delete(item)} style={{ fontSize: 12 }}>
+                  删除
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+    if (data[current].sub_menus.length <= 0) {
+      return dom;
+    } else {
+      return this.renderItems(data[current].sub_menus, 0, dom, ++n);
+    }
+  };
+
   render() {
     const { data, currentItem } = this.state;
     return (
@@ -89,45 +120,7 @@ export default class Source extends PureComponent {
           >
             创建菜单
           </Button>
-          <div className={styles.wrap}>
-            <div>
-              <h2 className={styles.title}>一级菜单</h2>
-              <ul>
-                {data.map(item => {
-                  return (
-                    <li key={item.id}>
-                      {item.name}
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.showEdit(item)}
-                        style={{ marginLeft: 3, fontSize: 12 }}
-                      >
-                        编辑
-                      </a>
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.delete(item)}
-                        style={{ fontSize: 12 }}
-                      >
-                        删除
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div>
-              <h2 className={styles.title}>二级菜单</h2>
-              <ul>
-                <li>
-                  菜单{' '}
-                  <a href="javascript:;" onClick={() => this.showEdit()}>
-                    编辑
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data, 0)}</div>
         </Card>
         <EditSourceForm
           visible={this.state.visible}
