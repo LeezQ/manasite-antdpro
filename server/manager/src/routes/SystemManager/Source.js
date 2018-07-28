@@ -122,7 +122,7 @@ export default class Source extends PureComponent {
     );
     if (data[current].sub_menus.length <= 0) {
       dom.push(
-        <div>
+        <div key={Math.random()}>
           <h2 className={styles.title}>操作列表</h2>
           <ul>
             <li>浏览</li>

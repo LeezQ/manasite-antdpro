@@ -5,7 +5,8 @@ import SearchForm from 'components/SearchForm';
 // import { EditableFormRow, EditableCell, EditableContext } from 'components/System/EditableCell';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TableList.less';
-import { getUsersList, freeze } from '../../services/user';
+import { getUsersList, freeze, updateUserForm } from '../../services/user';
+import { roles as fetchRole } from '../../services/system';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -19,21 +20,19 @@ const EditableRow = ({ form, index, ...props }) => (
 
 const EditableFormRow = Form.create()(EditableRow);
 
-const children = [];
-children.push(<Option key={Math.random()}>运营</Option>);
-children.push(<Option key={Math.random()}>客服</Option>);
-children.push(<Option key={Math.random()}>超级管理员</Option>);
-children.push(<Option key={Math.random()}>市场推广</Option>);
-children.push(<Option key={Math.random()}>开发测试产品</Option>);
-children.push(<Option key={Math.random()}>运维</Option>);
-children.push(<Option key={Math.random()}>销售</Option>);
-
 class EditableCell extends React.Component {
   getInput = () => {
+    const { roles } = this.props;
     if (this.props.inputType === 'Select') {
       return (
         <Select mode="multiple" style={{ width: '100%' }} onChange={this.handleChange}>
-          {children}
+          {roles.map((role, index) => {
+            return (
+              <Option value={role.id} key={index}>
+                {role.name}
+              </Option>
+            );
+          })}
         </Select>
       );
     }
@@ -49,7 +48,7 @@ class EditableCell extends React.Component {
             <td {...restProps}>
               {editing ? (
                 <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(`name_${dataIndex}`, {
+                  {getFieldDecorator(`${dataIndex}`, {
                     rules: [
                       {
                         required: true,
@@ -81,6 +80,7 @@ export default class User extends PureComponent {
     this.state = {
       data: [],
       editingKey: '',
+      roles: [],
     };
     this.columns = [
       {
@@ -129,7 +129,7 @@ export default class User extends PureComponent {
                       return (
                         <a
                           href="javascript:;"
-                          onClick={() => this.save(form, record.uid)}
+                          onClick={() => this.save(form, record)}
                           style={{ marginRight: 8 }}
                         >
                           保存
@@ -162,17 +162,25 @@ export default class User extends PureComponent {
     ];
   }
 
-  componentDidMount() {
-    getUsersList().then(data => {
+  getData = params => {
+    getUsersList(params).then(data => {
       if (data && data.status === 'ok') {
-        console.log(data.data);
         this.setState({ data: data.data.list });
       }
     });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'system/roles',
+  };
+
+  getRoles = () => {
+    fetchRole().then(data => {
+      if (data && data.status === 'ok') {
+        this.setState({ roles: data.data.list });
+      }
     });
+  };
+
+  componentDidMount() {
+    this.getData({});
+    this.getRoles();
   }
 
   isEditing = record => {
@@ -192,48 +200,21 @@ export default class User extends PureComponent {
     });
   };
 
-  save(form, key) {
-    form.validateFields((error, row) => {
+  save(form, record) {
+    form.validateFields((error, values) => {
       if (error) {
         return;
       }
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.uid);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ data: newData, editingKey: '' });
-      }
+      const newData = {
+        ...record,
+        ...values,
+      };
+      updateUserForm(newData).then(() => {
+        this.getData({});
+        this.setState({ editingKey: '' });
+      });
     });
   }
-
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-    dispatch({
-      type: 'system/roles',
-      payload: params,
-    });
-  };
 
   render() {
     const components = {
@@ -253,6 +234,7 @@ export default class User extends PureComponent {
           inputType: col.dataIndex === 'role' ? 'Select' : 'text',
           dataIndex: col.dataIndex,
           title: col.title,
+          roles: this.state.roles,
           editing: this.isEditing(record),
         }),
       };
@@ -262,7 +244,7 @@ export default class User extends PureComponent {
       <PageHeaderLayout title="用户管理">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <SearchForm dispatch={this.props.dispatch} />
+            <SearchForm dispatch={this.props.dispatch} fetch={this.getData} />
 
             <Table
               components={components}
