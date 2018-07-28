@@ -22,7 +22,6 @@ export default class Exchange extends PureComponent {
     state = {
       type:"exchange",
       exchange_state: "waiting",
-      uid:"-1",
     }
 
     componentDidMount() {
@@ -40,7 +39,9 @@ export default class Exchange extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({exchange_state:value})
+        this.setState({exchange_state:value},()=>{
+            this.loadList();
+        })
     }
 
     onShowSizeChange=(current, pageSize)=>{

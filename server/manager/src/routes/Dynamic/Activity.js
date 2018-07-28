@@ -23,7 +23,6 @@ export default class Activity extends PureComponent {
     state = {
         type:"activity",
         activity_state: "process",
-        uid:"-1",
     }
 
     componentDidMount() {
@@ -41,7 +40,9 @@ export default class Activity extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({activity_state:value})
+        this.setState({activity_state: value},() => {
+            this.loadList();
+        })
     }
 
     onShowSizeChange=(current, pageSize)=>{

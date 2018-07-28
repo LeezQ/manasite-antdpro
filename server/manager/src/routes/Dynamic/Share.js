@@ -23,7 +23,6 @@ export default class Share extends PureComponent {
     state = {
         type:"share",
         status: "public",
-        uid:"-1",
     }
 
     componentDidMount() {
@@ -41,7 +40,9 @@ export default class Share extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({status:value})
+        this.setState({status:value},()=>{
+            this.loadList();
+        })
     }
 
     onShowSizeChange=(current, pageSize)=>{
