@@ -4,11 +4,14 @@ import { connect } from 'dva';
 import { Button } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../utils/utils';
+import EditForm from './EditForm';
 
 @connect()
 export default class Subject extends Component {
     state={
       tabKey:'subject',
+      type:"special",
+      isShow:false
     }
 
     handleTabChange = key => {
@@ -27,6 +30,13 @@ export default class Subject extends Component {
         }
     };
 
+    showModal=(val)=>{
+        this.setState({
+            type:val,
+            isShow:true
+        })
+    }
+
     render(){
         const tabList = [
         {
@@ -41,7 +51,9 @@ export default class Subject extends Component {
         const mainSearch = (
           <div style={{ textAlign: 'right' }} >
 
-            {this.state.tabKey==='subject'?<Button type='primary'>增加专题</Button>:<Button type='primary'>增加帮助</Button>}
+            {this.state.tabKey==='subject'?
+              <Button type='primary' onClick={()=>this.showModal('special')}>增加专题</Button>
+              :<Button type='primary' onClick={()=>this.showModal('help')}>增加帮助</Button>}
           </div>
         );
         const { match, routerData, location } = this.props;
@@ -59,6 +71,7 @@ export default class Subject extends Component {
                 <Route key={item.key} path={item.path} component={item.component} exact={item.exact} />
           ))}
             </Switch>
+            <EditForm type={this.state.type} isShow={this.state.isShow}/>
           </PageHeaderLayout>
         )
     }
