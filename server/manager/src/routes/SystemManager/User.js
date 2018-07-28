@@ -121,7 +121,7 @@ export default class User extends PureComponent {
         render: (text, record) => {
           const editable = this.isEditing(record);
           return (
-            <div>
+            <div style={{ lineHeight: '42px' }}>
               {editable ? (
                 <span>
                   <EditableContext.Consumer>
@@ -137,9 +137,9 @@ export default class User extends PureComponent {
                       );
                     }}
                   </EditableContext.Consumer>
-                  <Popconfirm title="确定要取消?" onConfirm={() => this.cancel(record.uid)}>
-                    <a style={{ marginRight: 8 }}>取消</a>
-                  </Popconfirm>
+                  <a style={{ marginRight: 8 }} onClick={() => this.cancel(record.uid)}>
+                    取消
+                  </a>
                   <Popconfirm
                     title="确定要重置密码吗?"
                     onConfirm={() => this.resetPassword(record.uid)}

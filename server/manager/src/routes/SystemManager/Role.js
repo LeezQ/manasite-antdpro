@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Card, Form, Table, Button } from 'antd';
 import AddRoleForm from 'components/System/AddRoleForm';
+import _ from 'lodash';
 
 import styles from './TableList.less';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -30,7 +31,7 @@ export default class Role extends PureComponent {
         title: '上级角色',
         key: 'parent',
         render: record => {
-          return <div>{record.parent}</div>;
+          return <div>{this.state.rolesMap[record.parent].name}</div>;
         },
       },
       {
@@ -61,7 +62,7 @@ export default class Role extends PureComponent {
   fetchData = params => {
     roles(params).then(data => {
       if (data.status === 'ok') {
-        this.setState({ roles: data.data.list });
+        this.setState({ roles: data.data.list, rolesMap: _.keyBy(data.data.list, 'id') });
       }
     });
   };
@@ -74,31 +75,6 @@ export default class Role extends PureComponent {
     const { form } = this.props;
     form.resetFields();
   };
-
-  // handleStandardTableChange = (pagination, filtersArg, sorter) => {
-  //   const { dispatch } = this.props;
-  //   const { formValues } = this.state;
-
-  //   const filters = Object.keys(filtersArg).reduce((obj, key) => {
-  //     const newObj = { ...obj };
-  //     newObj[key] = getValue(filtersArg[key]);
-  //     return newObj;
-  //   }, {});
-
-  //   const params = {
-  //     currentPage: pagination.current,
-  //     pageSize: pagination.pageSize,
-  //     ...formValues,
-  //     ...filters,
-  //   };
-  //   if (sorter.field) {
-  //     params.sorter = `${sorter.field}_${sorter.order}`;
-  //   }
-  //   dispatch({
-  //     type: 'system/roles',
-  //     payload: params,
-  //   });
-  // };
 
   handleModalVisible = () => {
     this.setState({ visible: true, role: {} });
@@ -155,6 +131,7 @@ export default class Role extends PureComponent {
           onCancel={this.hidenModal}
           onCreate={this.handleSave}
           role={this.state.role}
+          roles={this.state.roles}
         />
       </PageHeaderLayout>
     );
