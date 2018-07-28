@@ -98,6 +98,7 @@ export default class Activity extends PureComponent {
 
     render() {
         const { dynamic:{data},loading, form } = this.props;
+        console.log(this.props);
         const { getFieldDecorator } = form;
         const {list,pagination={}} = data.list;
 

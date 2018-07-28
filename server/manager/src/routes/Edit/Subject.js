@@ -4,10 +4,10 @@ import { connect } from 'dva';
 import {Form,Card,Row,Col,DatePicker,Button,Input,Radio} from 'antd';
 
 import StandardTable from 'components/StandardTable';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout'; 
+import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './index.less';
 
-const FormItem = Form.Item; 
+const FormItem = Form.Item;
 
 
 @Form.create()
@@ -17,20 +17,30 @@ const FormItem = Form.Item;
 }))
 
 export default class Edit extends Component{
-    
+    state = {
+        type:"special"
+    }
+
     componentDidMount() {
         this.fetchMore();
-      }
+    }
+
     fetchMore = () => {
-     
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'edit/subject',
+          payload:{
+            ...this.state
+          }
+        });
     };
     handleTableChange = (pagination, filtersArg, sorter) => {
         const { dispatch } = this.props;
         const { formValues } = this.state;
       }
-    render() { 
-
-        const { edit:{data},loading, form } = this.props; 
+    render() {
+        const { edit:{data},loading, form } = this.props;
+        console.log(this.props);
         const { getFieldDecorator } = form;
         const columns=[
             {
@@ -47,8 +57,8 @@ export default class Edit extends Component{
             },
             {
                 title: '最后编辑时间',
-                dataIndex: '', 
-            }, 
+                dataIndex: '',
+            },
             {
                 title: '操作',
                 dataIndex: '',
@@ -56,17 +66,16 @@ export default class Edit extends Component{
         ]
         return (
           <Card bordered={false}>
-            <div className={styles.tableList}> 
-              <StandardTable 
+            <div className={styles.tableList}>
+              <StandardTable
                 loading={loading}
                 data={data}
-                columns={columns}  
+                columns={columns}
                 onChange={this.handleTableChange}
               />
             </div>
           </Card>
         )
     }
-    
-}
 
+}
