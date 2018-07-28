@@ -4,8 +4,8 @@ export async function getChannelList(params) {
   return request('/api/channels', { method: 'GET', ...params });
 }
 
-export async function updateChannel(param) {
-  return request('/api/channels', {
+export async function updateChannel(param, channelId) {
+  return request(`/api/channels/${channelId}`, {
     method: 'POST',
     body: param,
   });

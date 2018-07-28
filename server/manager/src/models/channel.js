@@ -23,7 +23,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateChannel, payload);
+      const response = yield call(updateChannel, payload, payload.id);
       console.log('add function response-', response);
       if (callback) callback();
     },

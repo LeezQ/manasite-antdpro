@@ -116,10 +116,10 @@ export default class ChannelList extends Component {
   handleCreate = () => {
     const form = this.formRef.props.form;
     form.validateFields((err, values) => {
+      console.log('Received values of form: ', values);
       if (err) {
         return;
       }
-      console.log('Received values of form: ', values);
       this.props.dispatch({
         type: 'channel/add',
         payload: values,
@@ -134,16 +134,15 @@ export default class ChannelList extends Component {
       this.setState({ addModalVisible: false });
     });
   };
-  handleSave = () => {
-    const form = this.formRef.props.form;
+  handleSave = data => {
+    const form = this.editFormRef.props.form;
     form.validateFields((err, values) => {
       if (err) {
         return;
       }
-      debugger;
       this.props.dispatch({
         type: 'channel/update',
-        payload: values,
+        payload: { ...values, id: data.id },
         callback: () => {
           this.props.dispatch({
             type: 'channel/fetch',
@@ -262,9 +261,11 @@ export default class ChannelList extends Component {
           onCancel={this.handleCancel}
         />
         <EditChannelModel
-          wrappedComponentRef={this.saveFormRef}
+          wrappedComponentRef={ref => {
+            this.editFormRef = ref;
+          }}
           visible={this.state.editModalVisible}
-          onSave={this.handleSave}
+          onSave={() => this.handleSave(this.state.currentData)}
           currentData={this.state.currentData}
           onCancel={this.handleEditCancel}
         />
