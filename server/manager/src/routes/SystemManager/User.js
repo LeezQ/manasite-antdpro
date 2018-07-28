@@ -41,7 +41,6 @@ class EditableCell extends React.Component {
   };
   render() {
     const { editing, dataIndex, title, inputType, record, index, ...restProps } = this.props;
-    console.log(123, dataIndex);
     return (
       <EditableContext.Consumer>
         {form => {

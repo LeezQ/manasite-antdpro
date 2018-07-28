@@ -20,9 +20,10 @@ export default class Source extends PureComponent {
     this.state = {
       data: [],
       visible: false,
-      current: 0,
       currentItem: {},
     };
+
+    this.current = [0, 0];
   }
 
   componentDidMount() {
@@ -75,13 +76,17 @@ export default class Source extends PureComponent {
     });
   };
 
-  changeCurrent = current => {
-    this.setState({
-      current,
-    });
+  changeCurrent = (n, current) => {
+    let c = this.current;
+    c[n - 1] = current;
+    c = c.slice(0, n);
+    c.push(0);
+    this.current = c;
+    this.forceUpdate();
   };
 
-  renderItems = (data, current, dom = [], n = 1) => {
+  renderItems = (data, dom = [], n = 1) => {
+    const current = this.current[n - 1] || 0;
     dom.push(
       <div key={data[current].id}>
         <h2 className={styles.title}>{n}级菜单</h2>
@@ -91,7 +96,7 @@ export default class Source extends PureComponent {
               <li
                 key={item.id}
                 className={current === index ? styles.current : ''}
-                onClick={() => this.changeCurrent(index)}
+                onClick={() => current !== index && this.changeCurrent(n, index)}
               >
                 [{item.id}] {item.name}
                 <a
@@ -116,14 +121,24 @@ export default class Source extends PureComponent {
       </div>
     );
     if (data[current].sub_menus.length <= 0) {
+      dom.push(
+        <div>
+          <h2 className={styles.title}>操作列表</h2>
+          <ul>
+            <li>浏览</li>
+            <li>修改会员信息</li>
+            <li>浏览会员档案</li>
+          </ul>
+        </div>
+      );
       return dom;
     } else {
-      return this.renderItems(data[current].sub_menus, 0, dom, ++n);
+      return this.renderItems(data[current].sub_menus, dom, n + 1);
     }
   };
 
   render() {
-    const { data, current, currentItem } = this.state;
+    const { data, currentItem } = this.state;
     return (
       <PageHeaderLayout title="资源管理">
         <Card bordered={false}>
@@ -136,7 +151,7 @@ export default class Source extends PureComponent {
           >
             创建菜单
           </Button>
-          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data, current)}</div>
+          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data)}</div>
         </Card>
         <EditSourceForm
           visible={this.state.visible}
