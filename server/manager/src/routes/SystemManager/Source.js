@@ -34,7 +34,7 @@ export default class Source extends PureComponent {
   }
 
   loadData = () => {
-    getMenu().then(data => {
+    getMenu({ list_all: true }).then(data => {
       if (data) {
         this.setState({
           data: data.data,

@@ -82,10 +82,10 @@ export default class Source extends PureComponent {
       saveDictionaries(data).then(v => {
         console.log(v);
       });
-      location.href = '/#/system/common';
-      setTimeout(() => {
-        location.reload();
-      }, 30);
+      // location.href = '/#/system/common';
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 30);
       // form.resetFields();
     });
   };
