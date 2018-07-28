@@ -8,7 +8,7 @@ function initTotalList(columns) {
     if (column.needTotal) {
       totalList.push({ ...column, total: 0 });
     }
-  }); 
+  });
   return totalList;
 }
 
@@ -18,18 +18,18 @@ class StandardTable extends PureComponent {
     const { columns } = props;
     const needTotalList = initTotalList(columns);
 
-    this.state = { 
+    this.state = {
       needTotalList,
     };
-  } 
+  }
 
   handleTableChange = (pagination, filters, sorter) => {
     this.props.onChange(pagination, filters, sorter);
-  }; 
+  };
 
   render() {
     const { needTotalList } = this.state;
-    const { data: {list,pagination },loading, columns, rowKey } = this.props;    
+    const { data: { list, pagination }, loading, columns, rowKey } = this.props;
 
     const paginationProps = {
       showSizeChanger: true,
@@ -38,10 +38,10 @@ class StandardTable extends PureComponent {
     };
 
     return (
-      <div className={styles.standardTable}> 
+      <div className={styles.standardTable}>
         <Table
           loading={loading}
-          rowKey={rowKey} 
+          rowKey={rowKey}
           dataSource={list}
           columns={columns}
           pagination={paginationProps}

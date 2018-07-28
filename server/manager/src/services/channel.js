@@ -1,7 +1,7 @@
 import request from '../utils/request';
 
-export async function getChannelList() {
-  return request('/api/channels');
+export async function getChannelList(params) {
+  return request('/api/channels', { method: 'GET', ...params });
 }
 
 export async function updateChannel(param) {
