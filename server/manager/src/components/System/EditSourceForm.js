@@ -65,12 +65,7 @@ class AddRoleForm extends Component {
           <FormItem {...formItemLayout} label="上级资源">
             {getFieldDecorator('parent', {
               initialValue: currentItem.parent,
-            })(
-              <Select placeholder="选择上级资源">
-                <Option value="0">一级菜单</Option>
-                <Option value="1">二级菜单</Option>
-              </Select>
-            )}
+            })(<Input />)}
           </FormItem>
 
           {/* <FormItem {...formItemLayout} label="资源类型">

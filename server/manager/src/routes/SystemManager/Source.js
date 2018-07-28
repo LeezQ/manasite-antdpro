@@ -20,6 +20,7 @@ export default class Source extends PureComponent {
     this.state = {
       data: [],
       visible: false,
+      current: 0,
       currentItem: {},
     };
   }
@@ -74,23 +75,38 @@ export default class Source extends PureComponent {
     });
   };
 
+  changeCurrent = current => {
+    this.setState({
+      current,
+    });
+  };
+
   renderItems = (data, current, dom = [], n = 1) => {
     dom.push(
       <div key={data[current].id}>
         <h2 className={styles.title}>{n}级菜单</h2>
         <ul>
-          {data.map(item => {
+          {data.map((item, index) => {
             return (
-              <li key={item.id}>
-                {item.name}
+              <li
+                key={item.id}
+                className={current === index ? styles.current : ''}
+                onClick={() => this.changeCurrent(index)}
+              >
+                [{item.id}] {item.name}
                 <a
                   href="javascript:;"
                   onClick={() => this.showEdit(item)}
-                  style={{ marginLeft: 3, fontSize: 12 }}
+                  style={{ marginLeft: 10, fontSize: 12 }}
                 >
                   编辑
                 </a>
-                <a href="javascript:;" onClick={() => this.delete(item)} style={{ fontSize: 12 }}>
+                <a
+                  href="javascript:;"
+                  onClick={() => this.delete(item)}
+                  className={styles.delete}
+                  style={{ fontSize: 12 }}
+                >
                   删除
                 </a>
               </li>
@@ -107,7 +123,7 @@ export default class Source extends PureComponent {
   };
 
   render() {
-    const { data, currentItem } = this.state;
+    const { data, current, currentItem } = this.state;
     return (
       <PageHeaderLayout title="资源管理">
         <Card bordered={false}>
@@ -120,7 +136,7 @@ export default class Source extends PureComponent {
           >
             创建菜单
           </Button>
-          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data, 0)}</div>
+          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data, current)}</div>
         </Card>
         <EditSourceForm
           visible={this.state.visible}
