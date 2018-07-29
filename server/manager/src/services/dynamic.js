@@ -7,8 +7,8 @@ import request from '../utils/request';
  */
 export async function getExchangeList(param){
     return request('/api/discover/search',{
-      method:'GET',
-      ...param
+      method:'POST',
+      body: param
     })
 }
 
@@ -30,8 +30,8 @@ export async function getExchangeProfile(id){
  */
 export async function getActivityList(param){
     return request('/api/discover/search',{
-      method:'GET',
-      ...param
+      method:'POST',
+      body: param
     })
 }
 
@@ -53,8 +53,8 @@ export async function getActivityProfile(id){
  */
 export async function getShareList(param){
     return request('/api/discover/search',{
-      method:'GET',
-      ...param
+      method:'POST',
+      body: param
     })
 }
 
