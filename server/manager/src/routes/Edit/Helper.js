@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import {Form,Card,Row,Col,DatePicker,Button,Input,Radio} from 'antd';
+import {Form,Card,Row,Col,DatePicker,Button,Input,Radio,Popconfirm} from 'antd';
+import {Link} from 'react-router-dom';
 
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -36,30 +37,52 @@ export default class Helper extends Component{
     handleTableChange = (pagination, filtersArg, sorter) => {
         const { dispatch } = this.props;
         const { formValues } = this.state;
-      }
+    }
+
+    handleDelete=(id)=>{
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'edit/delete',
+          payload:{
+            id:id,
+          },
+          callback: () => {
+              this.fetchMore();
+          }
+        });
+    }
+
     render() {
         const { edit:{data},loading, form } = this.props;
         const { getFieldDecorator } = form;
         const columns=[
             {
                 title: '序号',
-                dataIndex: '',
+                dataIndex: 'id',
             },
             {
-                title: '常见问题',
-                dataIndex: '',
+                title: '标题',
+                dataIndex: 'title',
             },
             {
-                title: '答案',
-                dataIndex: '',
+                title: '内容',
+                dataIndex: 'content',
             },
             {
                 title: '操作',
                 dataIndex: '',
-            },
+                render: (text, record) => {
+                    return (
+                      <Popconfirm title="是否删除当前专题记录?" onConfirm={() => this.handleDelete(record.id)}>
+                        <a href="javascript:void(0);">删除</a>
+                      </Popconfirm>
+                    );
+                  }
+            }
         ]
         return (
           <Card bordered={false}>
+            <Link to="/edit/content/help"><Button type='primary' style={{marginBottom:10}}>增加帮助</Button></Link>
             <div className={styles.tableList}>
               <StandardTable
                 loading={loading}

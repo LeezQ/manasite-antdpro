@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { routerRedux, Route, Switch } from 'dva/router';
 import { connect } from 'dva';
-import {Form, Button,Modal,Input,Select ,Icon,Checkbox} from 'antd';
+import {Form, Button,Modal,Input,Select ,Icon,message} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../utils/utils';
 import Ueditor from '../../components/Ueditor';
+import styles from './index.less';
 
 const FormItem = Form.Item;
 
@@ -20,6 +21,12 @@ export default class EditForm extends Component {
       isShow:false,
       editorHtml: '',
       editorText: '',
+    }
+
+    componentWillMount(){
+        this.setState({
+            type:this.props.match.params.type
+        })
     }
 
     componentDidMount(){
@@ -39,21 +46,49 @@ export default class EditForm extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    handleChange=(key,value)=>{
         this.setState({
-          type: nextProps.type,
-          isShow:nextProps.isShow
+          [key]:value
+        })
+    }
+
+    handleSubmit=(e)=>{
+        e.preventDefault();
+        if(!this.state.title){
+            return message.warning("请输入标题");
+        }
+
+        if(!this.state.content){
+            return message.warning("请输入内容");
+        }
+
+        if(!this.state.category){
+            return message.warning("请输入分类");
+        }
+
+        if(!this.state.key){
+            return message.warning("请输入关键字");
+        }
+
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'edit/add',
+          payload:{
+            ...this.state
+          },
+          callback:()=>{
+              this.props.dispatch(routerRedux.push(`/edit/${this.state.type=="help"?"help":"subject"}`));
+          }
         });
     }
 
-    handleCancel = (e) => {
-      this.setState({
-        isShow: false,
-      });
+    handleCancel=()=>{
+        this.props.dispatch(routerRedux.push(`/edit/${this.state.type=="help"?"help":"subject"}`));
     }
 
      render(){
        const { getFieldDecorator } = this.props.form;
+       const {isShow} = this.props;
        const formItemLayout = {
             labelCol: {
               xs: { span: 24 },
@@ -66,83 +101,54 @@ export default class EditForm extends Component {
           };
 
         return (
-            <Modal
-              title="添加专题"
-              visible={this.state.isShow}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
-            >
-              <Form onSubmit={this.handleSubmit} className="login-form">
-                <FormItem
+          <div className={styles.edit_form}>
+              <header  className={styles.edit_header}>信息编辑</header>
+            <Form >
+                  <FormItem
                     {...formItemLayout}
                     label="标题"
                   >
-                    {getFieldDecorator('title', {
-                      rules: [{
-                        required: true, message: '请输入标题',
-                      }],
-                    })(
-                      <Input />
-                    )}
+                    <Input placeholder="请输入标题" onChange={(v)=>this.handleChange('title',v.target.value)}/>
                   </FormItem>
                   <FormItem
                       {...formItemLayout}
-                      label="内容"
+                      label="类型"
                     >
-                      {getFieldDecorator('content', {
-                        rules: [ {
-                          required: true, message: 'Please input your E-mail!',
-                        }],
-                      })(
-                        <Input.TextArea />
-                      )}
+                      <Select
+                        placeholder="请选择类型"
+                        value={this.state.type+""}
+                        onChange={(v)=>this.handleChange('type',v)}
+                      >
+                        <Select.Option value="help">帮助</Select.Option>
+                        <Select.Option value="special">专题</Select.Option>
+                      </Select>
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        label="类型"
+                        label="分类"
                       >
-                        {getFieldDecorator('type', {
-                          rules: [{
-                            required: true, message: '请选择类型',
-                          }],
-                        })(
-                          <Select
-                            placeholder="请选择类型"
-                            value={this.state.type}
-                            onChange={this.handleSelectChange}
-                          >
-                            <Option value="help">帮助</Option>
-                            <Option value="special">专题</Option>
-                          </Select>
-                        )}
+                        <Input placeholder="请输入分类" onChange={(v)=>this.handleChange('category',v.target.value)}/>
                       </FormItem>
                       <FormItem
                           {...formItemLayout}
-                          label="分类"
+                          label="关键字"
                         >
-                          {getFieldDecorator('category', {
-                            rules: [{
-                              required: true, message: '请输入分类信息',
-                            }],
-                          })(
-                            <Input />
-                          )}
+                          <Input placeholder="请输入关键字" onChange={(v)=>this.handleChange('key',v.target.value)}/>
                         </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="关键字"
-                          >
-                            {getFieldDecorator('key', {
-                              rules: [{
-                                required: true, message: '请输入分类信息',
-                              }],
-                            })(
-                              <Input />
-                            )}
-                          </FormItem>
-              </Form>
+                    <FormItem
+                        {...formItemLayout}
+                        label="内容"
+                    >
+                        <Input.TextArea placeholder="请输入内容" rows={5} onChange={(v)=>this.handleChange('content',v.target.value)}/>
+                    </FormItem>
+            </Form>
+            <div className={styles.button_wrap}>
+                <Button style={{marginRight:30}} onClick={this.handleCancel}>返回</Button>
+                <Button type='primary' style={{marginBottom:10}}  onClick={this.handleSubmit}>确认提交</Button>
+            </div>
 
-            </Modal>
+          </div>
+
         )
     }
 }

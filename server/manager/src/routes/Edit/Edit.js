@@ -4,14 +4,11 @@ import { connect } from 'dva';
 import { Button } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../utils/utils';
-import EditForm from './EditForm';
 
 @connect()
 export default class Subject extends Component {
     state={
       tabKey:'subject',
-      type:"special",
-      isShow:false
     }
 
     handleTabChange = key => {
@@ -30,13 +27,6 @@ export default class Subject extends Component {
         }
     };
 
-    showModal=(val)=>{
-        this.setState({
-            type:val,
-            isShow:true
-        })
-    }
-
     render(){
         const tabList = [
         {
@@ -48,20 +38,11 @@ export default class Subject extends Component {
             tab: '帮助中心',
         },
         ];
-        const mainSearch = (
-          <div style={{ textAlign: 'right' }} >
-
-            {this.state.tabKey==='subject'?
-              <Button type='primary' onClick={()=>this.showModal('special')}>增加专题</Button>
-              :<Button type='primary' onClick={()=>this.showModal('help')}>增加帮助</Button>}
-          </div>
-        );
         const { match, routerData, location } = this.props;
         const routes = getRoutes(match.path, routerData);
         return (
           <PageHeaderLayout
             title="编辑管理"
-            content={mainSearch}
             tabList={tabList}
             tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
             onTabChange={this.handleTabChange}
@@ -71,7 +52,6 @@ export default class Subject extends Component {
                 <Route key={item.key} path={item.path} component={item.component} exact={item.exact} />
           ))}
             </Switch>
-            <EditForm type={this.state.type} isShow={this.state.isShow}/>
           </PageHeaderLayout>
         )
     }
