@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import {Form, Button,Modal,Input,Select ,Icon,message} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../utils/utils';
-import Ueditor from '../../components/Ueditor';
+// import Ueditor from '../../components/Ueditor';
 import styles from './index.less';
 
 const FormItem = Form.Item;
