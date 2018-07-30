@@ -14,3 +14,21 @@ export async function helpData(param){
       ...param,
     })
 }
+
+export async function addData(param){
+    return request(`api/contents`,{
+      method:'POST',
+      body:param
+    })
+}
+
+/**
+ * 删除内容
+ * @param  {[type]} param [description]
+ * @return {[type]}       [description]
+ */
+export async function deleteContent(param){
+  return request(`/api/contents/${param.id}`,{
+    method:'delete',
+  })
+}

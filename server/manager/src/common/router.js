@@ -142,6 +142,9 @@ export const getRouterData = app => {
     '/edit/help': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/Helper')),
     },
+    '/edit/content/:type': {
+      component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/EditForm')),
+    },
     //活动管理-置换管理
     '/dynamic/exchange': {
       component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Exchange')),

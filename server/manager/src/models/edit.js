@@ -7,37 +7,44 @@ export default {
     state: {
         data:{
             list:[],
-            pagination:{  
+            pagination:{
             },
         },
     },
 
-    effects: { 
+    effects: {
         // 专题
-        *subject({ payload }, { call, put }) { 
-            const response = yield call(services.subjectData, payload);    
+        *subject({ payload }, { call, put }) {
+            const response = yield call(services.subjectData, payload);
             yield put({
               type: 'save',
               payload: response.data,
             });
-          }, 
+          },
         // 帮助
-          *help({ payload }, { call, put }) { 
-            const response = yield call(services.helpData, payload);   
+          *help({ payload }, { call, put }) {
+            const response = yield call(services.helpData, payload);
             yield put({
               type: 'save',
               payload: response.data,
             });
-          }, 
+          },
+          *add({ payload ,callback}, { call, put }) {
+            const response = yield call(services.addData, payload);
+            if (callback) callback();
+          },
+          *delete({ payload,callback }, { call, put }) {
+            const response = yield call(services.deleteContent, payload);
+            if (callback) callback();
+          },
     },
 
     reducers: {
-        save(state, action) { 
+        save(state, action) {
             return {
               ...state,
               data: action.payload,
             };
-          },
+        },
     },
 }
-
