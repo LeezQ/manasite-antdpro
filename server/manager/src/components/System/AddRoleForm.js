@@ -85,10 +85,8 @@ class AddRoleForm extends Component {
   };
   render() {
     const { channels, menus } = this.state;
-    const { visible, form, onCancel, role } = this.props;
+    const { visible, form, onCancel, role, roles } = this.props;
     const { getFieldDecorator } = form;
-
-    console.log(role.parent, menus);
 
     role.privileges = (role.privileges || []).map(privilege => {
       return `${privilege}`;
@@ -115,11 +113,11 @@ class AddRoleForm extends Component {
             {getFieldDecorator('parent', {
               initialValue: role.parent || '',
             })(
-              <Select style={{ width: '100%' }} placeholder="选择角色">
-                {[1, 2, 3].map(i => {
+              <Select style={{ width: 120 }}>
+                {roles.map((item, index) => {
                   return (
-                    <Option key={`parent-${i}`} value={i}>
-                      {`parent-${i}`}
+                    <Option value={item.id} key={index}>
+                      {item.name}
                     </Option>
                   );
                 })}

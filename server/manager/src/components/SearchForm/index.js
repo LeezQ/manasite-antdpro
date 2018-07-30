@@ -43,6 +43,16 @@ export default class index extends Component {
     form.resetFields();
   };
 
+  handleSearch = () => {
+    const form = this.props.form;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      this.props.fetch(values);
+    });
+  };
+
   renderForm() {
     const { getFieldDecorator } = this.props.form;
     return (

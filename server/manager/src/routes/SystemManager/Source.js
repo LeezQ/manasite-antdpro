@@ -22,6 +22,8 @@ export default class Source extends PureComponent {
       visible: false,
       currentItem: {},
     };
+
+    this.current = [0, 0];
   }
 
   componentDidMount() {
@@ -34,17 +36,16 @@ export default class Source extends PureComponent {
   }
 
   loadData = () => {
-    getMenu().then(data => {
+    getMenu({ list_all: true }).then(data => {
       if (data) {
         this.setState({
-          data: data.data.list,
+          data: data.data,
         });
       }
     });
   };
 
   showEdit = item => {
-    console.log(item);
     this.setState({
       visible: true,
       currentItem: item,
@@ -75,6 +76,67 @@ export default class Source extends PureComponent {
     });
   };
 
+  changeCurrent = (n, current) => {
+    let c = this.current;
+    c[n - 1] = current;
+    c = c.slice(0, n);
+    c.push(0);
+    this.current = c;
+    this.forceUpdate();
+  };
+
+  renderItems = (data, dom = [], n = 1) => {
+    const current = this.current[n - 1] || 0;
+    dom.push(
+      <div key={data[current].id}>
+        <h2 className={styles.title}>{n}级菜单</h2>
+        <ul>
+          {data.map((item, index) => {
+            return (
+              <li
+                key={item.id}
+                className={current === index ? styles.current : ''}
+                onClick={() => current !== index && this.changeCurrent(n, index)}
+              >
+                [{item.id}] {item.name}
+                <a
+                  href="javascript:;"
+                  onClick={() => this.showEdit(item)}
+                  style={{ marginLeft: 10, fontSize: 12 }}
+                >
+                  编辑
+                </a>
+                <a
+                  href="javascript:;"
+                  onClick={() => this.delete(item)}
+                  className={styles.delete}
+                  style={{ fontSize: 12 }}
+                >
+                  删除
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+    if (data[current].sub_menus.length <= 0) {
+      dom.push(
+        <div key={Math.random()}>
+          <h2 className={styles.title}>操作列表</h2>
+          <ul>
+            <li>浏览</li>
+            <li>修改会员信息</li>
+            <li>浏览会员档案</li>
+          </ul>
+        </div>
+      );
+      return dom;
+    } else {
+      return this.renderItems(data[current].sub_menus, dom, n + 1);
+    }
+  };
+
   render() {
     const { data, currentItem } = this.state;
     return (
@@ -89,45 +151,7 @@ export default class Source extends PureComponent {
           >
             创建菜单
           </Button>
-          <div className={styles.wrap}>
-            <div>
-              <h2 className={styles.title}>一级菜单</h2>
-              <ul>
-                {data.map(item => {
-                  return (
-                    <li key={item.id}>
-                      {item.name}
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.showEdit(item)}
-                        style={{ marginLeft: 3, fontSize: 12 }}
-                      >
-                        编辑
-                      </a>
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.delete(item)}
-                        style={{ fontSize: 12 }}
-                      >
-                        删除
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div>
-              <h2 className={styles.title}>二级菜单</h2>
-              <ul>
-                <li>
-                  菜单{' '}
-                  <a href="javascript:;" onClick={() => this.showEdit()}>
-                    编辑
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <div className={styles.wrap}>{data.length > 0 && this.renderItems(data)}</div>
         </Card>
         <EditSourceForm
           visible={this.state.visible}
