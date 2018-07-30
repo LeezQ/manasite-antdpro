@@ -86,12 +86,12 @@ export default class User extends PureComponent {
       {
         title: '用户名',
         editable: true,
-        key: 'uid',
-        dataIndex: 'uid',
+        key: 'user_id',
+        dataIndex: 'user_id',
         render: (text, record) => {
           return (
             <div>
-              {record.uid} {record.isDisabled && <Tag color="orange">orange</Tag>}
+              {record.user_id} {record.isDisabled && <Tag color="orange">已冻结</Tag>}
             </div>
           );
         },
@@ -137,22 +137,34 @@ export default class User extends PureComponent {
                       );
                     }}
                   </EditableContext.Consumer>
-                  <a style={{ marginRight: 8 }} onClick={() => this.cancel(record.uid)}>
+                  <a style={{ marginRight: 8 }} onClick={() => this.cancel(record.user_id)}>
                     取消
                   </a>
                   <Popconfirm
                     title="确定要重置密码吗?"
-                    onConfirm={() => this.resetPassword(record.uid)}
+                    onConfirm={() => this.resetPassword(record.user_id)}
                   >
                     <a>密码重置</a>
                   </Popconfirm>
                 </span>
               ) : (
                 <div>
-                  <a onClick={() => this.edit(record.uid)}>编辑</a> &nbsp;
-                  <Popconfirm title="确定要冻结此帐号吗?" onConfirm={() => this.freeze(record.uid)}>
-                    <a>冻结</a>
-                  </Popconfirm>
+                  <a onClick={() => this.edit(record.user_id)}>编辑</a> &nbsp;
+                  {record.isDisabled ? (
+                    <Popconfirm
+                      title="确定要冻结此帐号吗?"
+                      onConfirm={() => this.freeze(record.user_id)}
+                    >
+                      <a>解冻</a>
+                    </Popconfirm>
+                  ) : (
+                    <Popconfirm
+                      title="确定要冻结此帐号吗?"
+                      onConfirm={() => this.unfreeze(record.user_id)}
+                    >
+                      <a>冻结</a>
+                    </Popconfirm>
+                  )}
                 </div>
               )}
             </div>
@@ -184,7 +196,7 @@ export default class User extends PureComponent {
   }
 
   isEditing = record => {
-    return record.uid === this.state.editingKey;
+    return record.user_id === this.state.editingKey;
   };
   edit(key) {
     this.setState({ editingKey: key });
@@ -195,8 +207,15 @@ export default class User extends PureComponent {
 
   freeze = key => {
     freeze({
-      userIds: key,
+      userIds: key.toString(),
       disabled: true,
+    });
+  };
+
+  unfreeze = key => {
+    freeze({
+      userIds: key.toString(),
+      disabled: false,
     });
   };
 
@@ -251,7 +270,7 @@ export default class User extends PureComponent {
               bordered
               dataSource={this.state.data}
               columns={columns}
-              rowKey="uid"
+              rowKey="user_id"
               rowClassName="editable-row"
             />
           </div>
