@@ -92,8 +92,9 @@ export default class ActivityProfile extends PureComponent {
             <Description term="状态">
               {["","默认","已确认","已拒绝","已取消","押金已付","已发货","已收货","已评价","存在争议待处理"][exchange.state]}
             </Description>
-          <div className={styles.title}>物品信息</div>
-          <Row>
+          </DescriptionList>
+          <Row style={{float:"left"}}>
+            <div className={styles.title}>物品信息</div>
             {
                 general.media && general.media.map(item=>
                     <div className={styles.image_cover}>
@@ -102,7 +103,6 @@ export default class ActivityProfile extends PureComponent {
                 )
             }
           </Row>
-          </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>评价列表</div>
           <Table

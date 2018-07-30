@@ -80,7 +80,18 @@
             left:0;
             width:100%;
             margin:0;
-            padding:10px 10px 5px;
+            padding:5px 10px 5px;
+            font-size:16px;
+        }
+
+        .leftTopIcon{
+            position:absolute;
+            background:rgba(0,0,0,.2);
+            padding:6px;
+            border-radius:50%;
+            top:2px;
+            left:2px;
+            color:#ffffff;
         }
     }
 
@@ -104,14 +115,20 @@
 
 }
 
+.title{
+  display:block;
+  float:left;
+}
+
 .image_cover{
     padding:20px;
     float:left;
+    width:200px;
     img{
-        width:200px;
-        height:200px;
+        width:100%;
     }
 }
+
 
 @media screen and (max-width: @screen-lg) {
   .tableListForm :global(.ant-form-item) {

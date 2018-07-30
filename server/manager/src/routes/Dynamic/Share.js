@@ -23,7 +23,6 @@ export default class Share extends PureComponent {
     state = {
         type:"share",
         status: "public",
-        uid:"-1",
     }
 
     componentDidMount() {
@@ -41,7 +40,9 @@ export default class Share extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({status:value})
+        this.setState({status:value},()=>{
+            this.loadList();
+        })
     }
 
     onShowSizeChange=(current, pageSize)=>{
@@ -52,7 +53,6 @@ export default class Share extends PureComponent {
         this.setState({
             ...condition
         },()=>{
-            console.log(this.state);
             this.loadList();
         })
     }
@@ -64,6 +64,9 @@ export default class Share extends PureComponent {
           payload:{
             id:id,
             reason:1
+          },
+          callback:()=>{
+              this.loadList();
           }
         });
     }
@@ -128,10 +131,11 @@ export default class Share extends PureComponent {
                                               list && list.map(record=>
                                                   <Col md={6} sm={24} key={record.id} >
                                                     <CardItem
-                                                        title={record.title || "未知标题"}
+                                                        title={record.title || "分享"}
                                                         cover={record.avatar}
                                                         link = {`/dynamic/shprofile/${record.id}`}
-                                                        depict="心爱的球拍割舍，希望能有新主人也会善待它"
+                                                        nickName={record.nickname}
+                                                        sourceUrl={record.general && record.general.link}
                                                         onDelete={this.state.tabpage!="deleted"?()=>this.onDelete(record.id):null}
                                                         extendData={
                                                             this.renderPrompt(record)

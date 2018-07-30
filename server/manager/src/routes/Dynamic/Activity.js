@@ -23,7 +23,6 @@ export default class Activity extends PureComponent {
     state = {
         type:"activity",
         activity_state: "process",
-        uid:"-1",
     }
 
     componentDidMount() {
@@ -41,7 +40,9 @@ export default class Activity extends PureComponent {
     }
 
     onTabChange=(value)=>{
-        this.setState({activity_state:value})
+        this.setState({activity_state: value},() => {
+            this.loadList();
+        })
     }
 
     onShowSizeChange=(current, pageSize)=>{
@@ -52,7 +53,6 @@ export default class Activity extends PureComponent {
         this.setState({
             ...condition
         },()=>{
-            console.log(this.state);
             this.loadList();
         })
     }
@@ -64,6 +64,9 @@ export default class Activity extends PureComponent {
           payload:{
             id:id,
             reason:1
+          },
+          callback:()=>{
+              this.loadList();
           }
         });
     }
@@ -137,10 +140,10 @@ export default class Activity extends PureComponent {
                                               list && list.map(record=>
                                                   <Col md={6} sm={24} key={record.id} >
                                                     <CardItem
-                                                        title={record.title || "未知标题"}
+                                                        title={record.title || "活动"}
                                                         cover={record.avatar}
                                                         link = {`/dynamic/acprofile/${record.id}`}
-                                                        depict="心爱的球拍割舍，希望能有新主人也会善待它"
+                                                        nickName={record.nickname}
                                                         onDelete={this.state.tabpage!="deleted"?()=>this.onDelete(record.id):null}
                                                         extendData={
                                                             this.renderPrompt(record)

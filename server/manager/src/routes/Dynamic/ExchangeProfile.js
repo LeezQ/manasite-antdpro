@@ -88,12 +88,12 @@ export default class ExchangeProfile extends PureComponent {
             <Description term="物品">{exchange.exchange_for && exchange.exchange_for.join(",")}</Description>
             <Description term="价格">{exchange.price==2?"高价区":"中价区"}</Description>
             <Description term="交换方式">{["","快递物流","见面交换","可以海外交换"][exchange.exchange_mode]}</Description>
-
             <Description term="状态">
               {["","默认","已确认","已拒绝","已取消","押金已付","已发货","已收货","已评价","存在争议待处理"][exchange.state]}
             </Description>
-          <div className={styles.title}>物品信息</div>
-          <Row>
+          </DescriptionList>
+          <Row style={{float:"left"}}>
+            <div className={styles.title}>物品信息</div>
             {
                 general.media && general.media.map(item=>
                     <div className={styles.image_cover}>
@@ -102,7 +102,6 @@ export default class ExchangeProfile extends PureComponent {
                 )
             }
           </Row>
-          </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>评价列表</div>
           <Table
