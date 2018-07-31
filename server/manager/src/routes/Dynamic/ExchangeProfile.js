@@ -80,7 +80,7 @@ export default class ExchangeProfile extends PureComponent {
             <Description term="发布时间">{info.created_at}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="置换物信息" style={{ marginBottom: 32 }}>
+          <DescriptionList size="large" col="2" title="置换物信息" style={{ marginBottom: 32 }}>
             <Description term="标题">{exchange.title}</Description>
             <Description term="所属频道">{channels && channels.map(item=>{
                 return item.name
