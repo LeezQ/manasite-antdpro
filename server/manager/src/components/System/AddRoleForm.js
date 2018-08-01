@@ -3,7 +3,6 @@
 */
 import React, { Component } from 'react';
 import { Checkbox, Form, Input, Modal, Select, Row, Col, Tree } from 'antd';
-import { getChannelList } from '../../services/channel';
 import { getMenu, addRole, updateRole } from '../../services/system';
 import ProvinceSelect from './ProvinceSelect.js';
 
@@ -14,12 +13,10 @@ const Option = Select.Option;
 
 class AddRoleForm extends Component {
   state = {
-    channels: [],
     menus: [],
     checkedMenus: [],
   };
   componentDidMount() {
-    this.getChannel();
     this.getMenu();
   }
 
@@ -30,23 +27,9 @@ class AddRoleForm extends Component {
   };
 
   getMenu = () => {
-    getMenu().then(data => {
+    getMenu({ list_all: true }).then(data => {
       if (data.status === 'ok') {
-        this.setState({ menus: data.data.records });
-      }
-    });
-  };
-
-  getChannel = () => {
-    getChannelList().then(data => {
-      if (data && data.status === 'ok') {
-        const channels = data.data.map(item => {
-          const obj = {};
-          obj.label = item.name;
-          obj.value = item.id;
-          return obj;
-        });
-        this.setState({ channels });
+        this.setState({ menus: data.data });
       }
     });
   };
@@ -83,9 +66,22 @@ class AddRoleForm extends Component {
       }
     });
   };
+
+  renderMenus = menus => {
+    if (menus.length > 0) {
+      return menus.map(menu => {
+        return (
+          <TreeNode title={menu.name} key={menu.id}>
+            {this.renderMenus(menu.sub_menus)}
+          </TreeNode>
+        );
+      });
+    }
+  };
+
   render() {
-    const { channels, menus } = this.state;
-    const { visible, form, onCancel, role, roles } = this.props;
+    const { menus = [] } = this.state;
+    const { channels, visible, form, onCancel, role, roles } = this.props;
     const { getFieldDecorator } = form;
 
     role.privileges = (role.privileges || []).map(privilege => {
@@ -149,21 +145,16 @@ class AddRoleForm extends Component {
           </FormItem>
 
           <FormItem label="选择资源">
-            <Tree
-              checkable
-              onCheck={this.onCheck}
-              defaultExpandAll
-              defaultCheckedKeys={role.privileges || []}
-            >
-              <TreeNode title="会员管理" key="0">
-                <TreeNode title="操作" key="1" />
-                <TreeNode title="操作2" key="2" />
-              </TreeNode>
-              <TreeNode title="兴趣频道管理" key="3">
-                <TreeNode title="操作1" key="4" />
-                <TreeNode title="操作2" key="5" />
-              </TreeNode>
-            </Tree>
+            {menus && (
+              <Tree
+                checkable
+                onCheck={this.onCheck}
+                defaultExpandAll
+                defaultCheckedKeys={role.privileges || []}
+              >
+                {this.renderMenus(menus)}
+              </Tree>
+            )}
           </FormItem>
         </Form>
       </Modal>
