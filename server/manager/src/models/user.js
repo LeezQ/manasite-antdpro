@@ -2,7 +2,9 @@ import {
   getUsersList,
   getUserInfo,
   getUserCredit,
-  updateUserForm} from '../services/user'
+  updateUserForm,
+  addUser,
+} from '../services/user';
 import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 
@@ -10,40 +12,46 @@ export default {
   namespace: 'user',
 
   state: {
-    data:{ 
+    data: {
       list: [],
-      pagination: {  
-      },
+      pagination: {},
     },
-    currentUser:{}, 
-    stats:{}, 
+    currentUser: {},
+    stats: {},
   },
   effects: {
-    *fetch({ payload }, { call, put }) { 
-      const response = yield call(getUsersList, payload);   
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(getUsersList, payload);
       yield put({
         type: 'save',
         payload: response.data,
       });
     },
-    *freeze({ payload, callback }, { call, put }) { 
-      const response = yield call(freeze, payload);  
+    *freeze({ payload, callback }, { call, put }) {
+      const response = yield call(freeze, payload);
       if (callback) callback();
     },
-    *info({ payload},{call,put}){   
-      const response=yield call(getUserInfo,payload)   
-      const stats=yield call(getUserCredit,payload) 
+    *info({ payload }, { call, put }) {
+      const response = yield call(getUserInfo, payload);
+      const stats = yield call(getUserCredit, payload);
       yield put({
-        type:'current',
-        payload:{
-          currentUser:response.data,
-          stats:stats.data, 
-      }})
-    },  
-    *submitUserForm({ payload }, { call,put }) { 
-      const response=yield call(updateUserForm, payload); 
-      notification.success({message:'操作成功！'});
+        type: 'current',
+        payload: {
+          currentUser: response.data,
+          stats: stats.data,
+        },
+      });
+    },
+    *submitUserForm({ payload }, { call, put }) {
+      const response = yield call(updateUserForm, payload);
+      notification.success({ message: '操作成功！' });
       yield put(routerRedux.push('/users/list'));
+    },
+
+    *addUserForm({ payload }, { call, put }) {
+      const response = yield call(addUser, payload);
+      notification.success({ message: '操作成功！' });
+      yield put(routerRedux.push('/system/user'));
     },
   },
 
@@ -54,11 +62,11 @@ export default {
         data: action.payload,
       };
     },
-    current(state,action){ 
+    current(state, action) {
       return {
         ...state,
-        ...action.payload, 
-      }
-    }, 
+        ...action.payload,
+      };
+    },
   },
 };
