@@ -74,9 +74,10 @@ export async function getShareProfile(id){
  * @param  {[type]} type [description]
  * @return {[type]}      [description]
  */
-export async function getComments(type){
-    return request(`/api/comments/${type}/66`,{
+export async function getComments(param){
+    return request(`/api/comments`,{
       method:'GET',
+      ...param,
     })
 }
 
@@ -89,5 +90,16 @@ export async function deleteDynamic(param){
   return request(`/api/discover/${param.id}`,{
     method:'delete',
     ...param
+  })
+}
+
+/**
+ * 删除动态
+ * @param  {[type]} id [description]
+ * @return {[type]}    [description]
+ */
+export async function deleteComment(param){
+  return request(`/api/comments/${param.id}`,{
+    method:'delete'
   })
 }

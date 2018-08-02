@@ -6,7 +6,8 @@ import {
     getExchangeProfile,
     getActivityProfile,
     getShareProfile,
-    deleteDynamic
+    deleteDynamic,
+    deleteComment
   } from '../services/dynamic'
 
 export default {
@@ -69,7 +70,7 @@ export default {
         },
 
         *fetchComments({ payload }, { call, put }) {
-          const response = yield call(getComments, payload.type);
+          const response = yield call(getComments, payload);
           yield put({
             type: 'save',
             payload:{list:response.data,pagination:{total:100,current:1}}
@@ -77,6 +78,10 @@ export default {
         },
         *delete({ payload, callback }, { call, put }) {
           const response = yield call(deleteDynamic, payload);
+          if (callback) callback();
+        },
+        *deleteComment({ payload, callback }, { call, put }) {
+          const response = yield call(deleteComment, payload);
           if (callback) callback();
         },
 
