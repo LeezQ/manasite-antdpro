@@ -53,8 +53,8 @@ export async function getActivityProfile(id){
  */
 export async function getShareList(param){
     return request('/api/discover/search',{
-      method:'POST',
-      body: param
+        method:'POST',
+        body: param
     })
 }
 
@@ -75,7 +75,7 @@ export async function getShareProfile(id){
  * @return {[type]}      [description]
  */
 export async function getComments(type){
-    return request(`/api/comments/${type}/60`,{
+    return request(`/api/comments/${type}/66`,{
       method:'GET',
     })
 }

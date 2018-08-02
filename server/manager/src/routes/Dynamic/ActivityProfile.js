@@ -4,6 +4,7 @@ import { Card, Badge, Table, Divider,Row,Col } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 import styles from './index.less';
+import moment from 'moment';
 
 const { Description } = DescriptionList;
 
@@ -52,7 +53,7 @@ export default class ActivityProfile extends PureComponent {
   render() {
     const { dynamic:{info={}},loading, form } = this.props;
     const  {userinfo={},general={},channels,comments,stat} = info;
-    const  {exchange={}} = general;
+    const  {activity={}} = general;
 
     const commentColumns = [{
       title: '用户ID',
@@ -80,21 +81,17 @@ export default class ActivityProfile extends PureComponent {
             <Description term="发布时间">{info.created_at}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="置换物信息" style={{ marginBottom: 32 }}>
-            <Description term="标题">{exchange.title}</Description>
+          <DescriptionList size="large" col="2" title="活动信息" style={{ marginBottom: 32 }}>
+            <Description term="标题">{general.title}</Description>
             <Description term="所属频道">{channels && channels.map(item=>{
-                return item.name
+                return item.name + ","
             })}</Description>
-            <Description term="物品">{exchange.exchange_for && exchange.exchange_for.join(",")}</Description>
-            <Description term="价格">{exchange.price==2?"高价区":"中价区"}</Description>
-            <Description term="交换方式">{["","快递物流","见面交换","可以海外交换"][exchange.exchange_mode]}</Description>
-
-            <Description term="状态">
-              {["","默认","已确认","已拒绝","已取消","押金已付","已发货","已收货","已评价","存在争议待处理"][exchange.state]}
-            </Description>
+            <Description term="开始时间">{moment(activity.start_time).format("YYYY-MM-DD HH:mm:ss")}</Description>
+            <Description term="结束时间">{moment(activity.end_time).format("YYYY-MM-DD HH:mm:ss")}</Description>
+            <Description term="活动详情">{general.description}</Description>
           </DescriptionList>
           <Row style={{float:"left"}}>
-            <div className={styles.title}>物品信息</div>
+            <div className={styles.title}>活动图片</div>
             {
                 general.media && general.media.map(item=>
                     <div className={styles.image_cover}>

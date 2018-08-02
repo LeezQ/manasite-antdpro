@@ -1,5 +1,6 @@
 import React, { PureComponent,Fragment} from 'react';
 import { connect } from 'dva';
+import {Link} from 'react-router-dom';
 import { Card, Badge, Table, Divider,Row,Col } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
@@ -52,8 +53,6 @@ export default class ShareProfile extends PureComponent {
   render() {
     const { dynamic:{info={}},loading, form } = this.props;
     const  {userinfo={},general={},channels,comments,stat} = info;
-    const  {exchange={}} = general;
-
     const commentColumns = [{
       title: '用户ID',
       dataIndex: 'id',
@@ -80,20 +79,18 @@ export default class ShareProfile extends PureComponent {
             <Description term="发布时间">{info.created_at}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="分享信息" style={{ marginBottom: 32 }}>
-            <Description term="标题">{exchange.title}</Description>
+          <DescriptionList size="large" col="2" title="分享信息" style={{ marginBottom: 32 }}>
+            <Description term="标题">{general.title}
+              {
+                general.link &&
+                    <a style={{marginLeft:20}} target="_blank" href={general.link}>查看原文</a>
+              }</Description>
             <Description term="所属频道">{channels && channels.map(item=>{
-                return item.name
+                return item.name+" , ";
             })}</Description>
-            <Description term="物品">{exchange.exchange_for && exchange.exchange_for.join(",")}</Description>
-            <Description term="价格">{exchange.price==2?"高价区":"中价区"}</Description>
-            <Description term="交换方式">{["","快递物流","见面交换","可以海外交换"][exchange.exchange_mode]}</Description>
-            <Description term="状态">
-              {["","默认","已确认","已拒绝","已取消","押金已付","已发货","已收货","已评价","存在争议待处理"][exchange.state]}
-            </Description>
           </DescriptionList>
           <Row style={{float:"left"}}>
-            <div className={styles.title}>物品信息</div>
+            <div className={styles.title}>分享媒体</div>
             {
                 general.media && general.media.map(item=>
                     <div className={styles.image_cover}>
