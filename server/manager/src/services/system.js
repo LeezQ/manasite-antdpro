@@ -82,7 +82,7 @@ export async function dictionaries(param) {
  */
 export async function saveDictionaries(param, id) {
   return request(`/api/system/dictionaries/${id}`, {
-    method: 'GET',
-    ...param,
+    method: 'POST',
+    body: param,
   });
 }

@@ -1,18 +1,22 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Form, Card, Tabs, Button, Row, Col, Input, message, Radio } from 'antd';
+import { Form, Card, Tabs, Row, Col, Input, message, Modal } from 'antd';
 import styled from 'styled-components';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { dictionaries, saveDictionaries } from '../../services/system';
 
 const TabPane = Tabs.TabPane;
-const RadioGroup = Radio.Group;
 
-const radioStyle = {
-  display: 'block',
-  height: '30px',
-  lineHeight: '30px',
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
 };
 
 const RowV = styled(Row)`
@@ -20,6 +24,10 @@ const RowV = styled(Row)`
   padding: 10px;
   display: flex;
   align-items: center;
+`;
+
+const InputV = styled(Input)`
+  width: 200px;
 `;
 
 @connect(({ system, loading }) => ({
@@ -32,18 +40,26 @@ export default class Source extends PureComponent {
     super(props);
 
     this.state = {
-      data: {},
-      isEdit: window.location.toString().indexOf('edit=true') > 0,
+      replyData: [],
+      currentItem: {},
+      visible: false,
     };
   }
 
   componentDidMount() {
     dictionaries({ type: 'feedback' }).then(data => {
       if (data && data.status === 'ok') {
-        // this.setState({ sourceData: data.data.list });
+        this.setState({ replyData: data.data.list });
       }
     });
   }
+
+  editForm = currentItem => {
+    this.setState({
+      visible: true,
+      currentItem,
+    });
+  };
 
   save = () => {
     const form = this.props.form;
@@ -55,11 +71,13 @@ export default class Source extends PureComponent {
       const data = [
         {
           name: values.reply_speed,
-          reply_speed: {
+          key: values.reply_speed,
+          value: {
             side: values.reply_speed_side,
             options: [values['reply_speed-1'], values['reply_speed-2'], values['reply_speed-3']],
           },
           type: 'feedback',
+          description: '',
         },
         {
           name: values.trust_degree,
@@ -78,10 +96,11 @@ export default class Source extends PureComponent {
           type: 'feedback',
         },
       ];
-      console.log(data);
-      saveDictionaries(data).then(v => {
-        console.log(v);
-      });
+      for (let i = 0; i < data.length; i++) {
+        saveDictionaries(data[i]).then(v => {
+          console.log(v);
+        });
+      }
       // location.href = '/#/system/common';
       // setTimeout(() => {
       //   location.reload();
@@ -90,159 +109,75 @@ export default class Source extends PureComponent {
     });
   };
 
+  submit = () => {
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      const submitData = {
+        ...this.state.currentItem,
+        ...values,
+      };
+      saveDictionaries(submitData, submitData.id).then(() => {
+        console.log('Received values of form: ', submitData);
+        message.success('修改成功');
+        this.setState({ visible: false });
+      });
+    });
+  };
+
   render() {
-    const { isEdit } = this.state;
+    const { visible, replyData, currentItem } = this.state;
 
     return (
       <PageHeaderLayout title="评价管理">
         <Card>
-          <Tabs
-            tabBarExtraContent={
-              isEdit ? (
-                <div>
-                  <Button type="primary" style={{ marginRight: 10 }} onClick={this.save}>
-                    保存
-                  </Button>
-                  <Button>取消</Button>
-                </div>
-              ) : (
-                <Button type="primary" href="#/system/common?edit=true" target="_blank">
-                  修改评价
-                </Button>
-              )
-            }
-          >
+          <Tabs>
             <TabPane tab="置换-确认收货" key="1">
               <RowV>
-                <Col span={8}>评价标题</Col>
-                <Col span={8}>评价方</Col>
-                <Col span={8}>评价选项</Col>
+                <Col span={6}>评价标题</Col>
+                <Col span={6}>评价方</Col>
+                <Col span={6}>评价选项</Col>
+                <Col span={6}>操作</Col>
               </RowV>
-
-              <RowV>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`reply_speed`, {
-                        initialValue: '对方回复速度',
-                      })(<Input style={{ width: '80%', marginBottom: 10 }} />)
-                    : '对方回复速度'}
-                </Col>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`reply_speed_side`, {
-                        initialValue: 1,
-                      })(
-                        <RadioGroup>
-                          <Radio style={radioStyle} value={1}>
-                            发布方
-                          </Radio>
-                          <Radio style={radioStyle} value={2}>
-                            申请方
-                          </Radio>
-                          <Radio style={radioStyle} value={3}>
-                            双方
-                          </Radio>
-                        </RadioGroup>
-                      )
-                    : '发布方'}
-                </Col>
-                <Col span={8}>
-                  {['回复速度很快', '回复速度一般', '回复速度很慢'].map((item, index) => {
-                    return isEdit ? (
-                      this.props.form.getFieldDecorator(`reply_speed-${index}`, {
-                        initialValue: item,
-                      })(<Input key={item} style={{ width: '80%', marginBottom: 10 }} />)
-                    ) : (
-                      <div key={item}>{item}</div>
-                    );
-                  })}
-                </Col>
-              </RowV>
-
-              <RowV>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`trust_degree`, {
-                        initialValue: '对方态度',
-                      })(<Input style={{ width: '80%', marginBottom: 10 }} />)
-                    : '对方态度'}
-                </Col>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`trust_degree_side`, {
-                        initialValue: 1,
-                      })(
-                        <RadioGroup>
-                          <Radio style={radioStyle} value={1}>
-                            发布方
-                          </Radio>
-                          <Radio style={radioStyle} value={2}>
-                            申请方
-                          </Radio>
-                          <Radio style={radioStyle} value={3}>
-                            双方
-                          </Radio>
-                        </RadioGroup>
-                      )
-                    : '发布方'}
-                </Col>
-                <Col span={8}>
-                  {['态度很好', '态度一般', '态度不怎么好'].map((item, index) => {
-                    return isEdit ? (
-                      this.props.form.getFieldDecorator(`trust_degree-${index}`, {
-                        initialValue: item,
-                      })(<Input key={item} style={{ width: '80%', marginBottom: 10 }} />)
-                    ) : (
-                      <div key={item}>{item}</div>
-                    );
-                  })}
-                </Col>
-              </RowV>
-
-              <RowV>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`manner`, {
-                        initialValue: '对对方的信任度',
-                      })(<Input style={{ width: '80%', marginBottom: 10 }} />)
-                    : '对对方的信任度'}
-                </Col>
-                <Col span={8}>
-                  {isEdit
-                    ? this.props.form.getFieldDecorator(`manner_side`, {
-                        initialValue: 1,
-                      })(
-                        <RadioGroup>
-                          <Radio style={radioStyle} value={1}>
-                            发布方
-                          </Radio>
-                          <Radio style={radioStyle} value={2}>
-                            申请方
-                          </Radio>
-                          <Radio style={radioStyle} value={3}>
-                            双方
-                          </Radio>
-                        </RadioGroup>
-                      )
-                    : '发布方'}
-                </Col>
-                <Col span={8}>
-                  {['90%', '90%', '90%'].map((item, index) => {
-                    return isEdit ? (
-                      this.props.form.getFieldDecorator(`value-manner-${index}`, {
-                        initialValue: item,
-                      })(<Input key={index} style={{ width: '80%', marginBottom: 10 }} />)
-                    ) : (
-                      <div key={index}>{item}</div>
-                    );
-                  })}
-                </Col>
-              </RowV>
+              {replyData.map((v, key) => {
+                return (
+                  <RowV key={key}>
+                    <Col span={6}>{v.key}</Col>
+                    <Col span={6}>{v.value}</Col>
+                    <Col span={6}>{v.description}</Col>
+                    <Col span={6}>
+                      <a href="javascript:;" onClick={() => this.editForm(v)}>
+                        编辑
+                      </a>
+                    </Col>
+                  </RowV>
+                );
+              })}
             </TabPane>
             <TabPane tab="..." key="2">
               Content of tab 2
             </TabPane>
           </Tabs>
+          <Modal visible={visible} title="编辑" onOk={() => this.submit()}>
+            <Form>
+              <Form.Item {...formItemLayout} label="评价标题">
+                {this.props.form.getFieldDecorator('key', {
+                  initialValue: currentItem.key,
+                })(<InputV />)}
+              </Form.Item>
+              <Form.Item {...formItemLayout} label="评价标题">
+                {this.props.form.getFieldDecorator('value', {
+                  initialValue: currentItem.value,
+                })(<InputV />)}
+              </Form.Item>
+              <Form.Item {...formItemLayout} label="描述">
+                {this.props.form.getFieldDecorator('description', {
+                  initialValue: currentItem.description,
+                })(<InputV />)}
+              </Form.Item>
+            </Form>
+          </Modal>
         </Card>
       </PageHeaderLayout>
     );

@@ -29,6 +29,13 @@ export async function getUserCredit(param) {
   });
 }
 
+export async function addUser(param) {
+  return request(`/api/users`, {
+    method: 'POST',
+    body: param,
+  });
+}
+
 export async function updateUserForm(param) {
   return request(`/api/users/${param.user_id}`, {
     method: 'POST',

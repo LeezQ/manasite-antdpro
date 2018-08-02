@@ -7,6 +7,7 @@ import _ from 'lodash';
 import styles from './TableList.less';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { roles } from '../../services/system';
+import { getChannelList } from '../../services/channel';
 
 @connect(({ system, loading }) => ({
   system,
@@ -21,6 +22,8 @@ export default class Role extends PureComponent {
       roles: [],
       role: {},
       visible: false,
+      channels: [],
+      channelsMap: {},
     };
     this.columns = [
       {
@@ -35,10 +38,20 @@ export default class Role extends PureComponent {
         },
       },
       {
-        title: '角色属性',
-        key: 'privileges',
+        title: '管理频道',
+        key: 'channels',
         render: record => {
-          return <div>{record.channels.join(', ')}</div>;
+          return (
+            <div>
+              {record.channels.map(c => {
+                return (
+                  <span key={c}>
+                    {this.state.channelsMap[`${c}`] && this.state.channelsMap[`${c}`].name},{' '}
+                  </span>
+                );
+              })}
+            </div>
+          );
         },
       },
       {
@@ -57,7 +70,22 @@ export default class Role extends PureComponent {
 
   componentDidMount() {
     this.fetchData({});
+    this.getChannel();
   }
+
+  getChannel = () => {
+    getChannelList().then(data => {
+      if (data && data.status === 'ok') {
+        const channels = data.data.map(item => {
+          const obj = {};
+          obj.label = item.name;
+          obj.value = item.id;
+          return obj;
+        });
+        this.setState({ channels, channelsMap: _.keyBy(data.data, 'id') });
+      }
+    });
+  };
 
   fetchData = params => {
     roles(params).then(data => {
@@ -127,6 +155,7 @@ export default class Role extends PureComponent {
         </Card>
         <AddRoleForm
           wrappedComponentRef={this.saveFormRef}
+          channels={this.state.channels}
           visible={visible}
           onCancel={this.hidenModal}
           onCreate={this.handleSave}

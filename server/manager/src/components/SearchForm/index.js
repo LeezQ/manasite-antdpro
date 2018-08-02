@@ -28,6 +28,10 @@ export default class index extends Component {
       if (err) {
         return;
       }
+      this.props.dispatch({
+        type: 'user/addUserForm',
+        payload: values,
+      });
       console.log('Received values of form: ', values);
       form.resetFields();
       this.setState({ visible: false });
