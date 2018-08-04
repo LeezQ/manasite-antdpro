@@ -1,7 +1,7 @@
 import React, { PureComponent,Fragment} from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination,Icon} from 'antd';
+import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination,Icon,Popconfirm} from 'antd';
 
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -40,13 +40,25 @@ export default class Share extends PureComponent {
 
   onTabChange=(value)=>{
       this.setState({tabpage:value},()=>{
-          console.log(this.state);
           this.loadComments();
       })
   }
 
   onShowSizeChange=(current, pageSize)=>{
       console.log(current, pageSize);
+  }
+
+  handleDelete=(id)=>{
+      const {dispatch} = this.props;
+      dispatch({
+        type: 'dynamic/deleteComment',
+        payload:{
+          id:id,
+        },
+        callback: () => {
+            this.loadComments();
+        }
+      });
   }
 
     renderForm() {
@@ -90,18 +102,21 @@ export default class Share extends PureComponent {
               dataIndex: 'nickname',
             },
             {
-              title: '评论置换',
-              dataIndex: 'charge_fee',
-            },
-            {
               title: '评论时间',
               dataIndex: 'create_at',
+              render:(text)=>{
+                  return moment(text).format('YYYY-MM-DD HH:mm:ss')
+              }
             },
             {
               title: '操作',
               dataIndex: '',
-              render:()=>{
-                  return <a href="javascript:void(0)">删除</a>
+              render: (text, record) => {
+                  return (
+                    <Popconfirm title="删除当前选择的评论?" onConfirm={() => this.handleDelete(record.id)}>
+                      <a href="javascript:void(0);">删除</a>
+                    </Popconfirm>
+                  );
               }
             },
         ]
