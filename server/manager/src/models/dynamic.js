@@ -7,7 +7,8 @@ import {
     getActivityProfile,
     getShareProfile,
     deleteDynamic,
-    deleteComment
+    deleteComment,
+    deleteComments
   } from '../services/dynamic'
 
 export default {
@@ -82,6 +83,10 @@ export default {
         },
         *deleteComment({ payload, callback }, { call, put }) {
           const response = yield call(deleteComment, payload);
+          if (callback) callback();
+        },
+        *deleteComments({ payload, callback }, { call, put }) {
+          const response = yield call(deleteComments, payload);
           if (callback) callback();
         },
 

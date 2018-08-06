@@ -100,6 +100,13 @@ export async function deleteDynamic(param){
  */
 export async function deleteComment(param){
   return request(`/api/comments/${param.id}`,{
-    method:'delete'
+    method:'delete',
+  })
+}
+
+export async function deleteComments(param){
+  return request(`/api/comments`,{
+    method:'delete',
+    ...param
   })
 }
