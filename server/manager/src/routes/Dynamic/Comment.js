@@ -1,7 +1,7 @@
 import React, { PureComponent,Fragment} from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination,Icon,Popconfirm} from 'antd';
+import {Form,Card,Row,Col,Radio,Input,Button,DatePicker,Tabs,Badge,Pagination,Icon,Popconfirm,Table} from 'antd';
 
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -19,47 +19,64 @@ const TabPane = Tabs.TabPane;
 
 export default class Share extends PureComponent {
 
-  state={
-    tabpage: "exchange",
-    selectedRowKeys: []
-  }
+    state={
+      tabpage: "exchange",
+      selectedRowKeys: []
+    }
 
-  componentDidMount() {
-      this.loadComments();
-  }
+    componentDidMount() {
+        this.loadComments();
+    }
 
-  loadComments(){
+    loadComments(){
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'dynamic/fetchComments',
+          payload:{
+            type: this.state.tabpage
+          }
+        });
+    }
+
+    onTabChange=(value)=>{
+        this.setState({tabpage:value},()=>{
+            this.loadComments();
+        })
+    }
+
+    onShowSizeChange=(current, pageSize)=>{
+        console.log(current, pageSize);
+    }
+
+    handleDelete=(id)=>{
+        const {dispatch} = this.props;
+        dispatch({
+          type: 'dynamic/deleteComment',
+          payload:{
+            id:id,
+          },
+          callback: () => {
+              this.loadComments();
+          }
+        });
+    }
+
+    onSelectChange = (selectedRowKeys) => {
+      this.setState({ selectedRowKeys });
+    }
+
+    onDeleteMulti =()=>{
       const {dispatch} = this.props;
       dispatch({
-        type: 'dynamic/fetchComments',
+        type: 'dynamic/deleteComments',
         payload:{
-          type: this.state.tabpage
-        }
-      });
-  }
-
-  onTabChange=(value)=>{
-      this.setState({tabpage:value},()=>{
-          this.loadComments();
-      })
-  }
-
-  onShowSizeChange=(current, pageSize)=>{
-      console.log(current, pageSize);
-  }
-
-  handleDelete=(id)=>{
-      const {dispatch} = this.props;
-      dispatch({
-        type: 'dynamic/deleteComment',
-        payload:{
-          id:id,
+          commentIds:this.state.selectedRowKeys.join(','),
         },
         callback: () => {
             this.loadComments();
         }
       });
-  }
+    }
 
     renderForm() {
       const { getFieldDecorator } = this.props.form;
@@ -119,7 +136,9 @@ export default class Share extends PureComponent {
                   );
               }
             },
-        ]
+        ];
+
+        const { list=[], pagination } = data.list;
 
         const rowSelection = {
           selectedRowKeys,
@@ -144,6 +163,12 @@ export default class Share extends PureComponent {
           },
         ]
 
+        const paginationProps = {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          ...data.pagination,
+        };
+
         return (
           <PageHeaderLayout title="评论管理">
             <Card bordered={false}>
@@ -157,15 +182,16 @@ export default class Share extends PureComponent {
                                       <div>
                                         <div className={styles.tableListForm}>{this.renderForm()}</div>
                                         <div>
-                                            <span className={styles.checkIcon}><Icon type="check-circle-o" /> 全选</span>
-                                            <Button type="primary">批量删除</Button>
+                                            <Button type="primary" onClick={()=>this.onDeleteMulti()}>批量删除</Button>
                                         </div>
-                                        <StandardTable
-                                          rowSelection={rowSelection}
+                                        <Table
                                           loading={loading}
-                                          data={data.list}
+                                          rowKey={record=>record.id}
+                                          dataSource={list}
                                           columns={columns}
+                                          pagination={paginationProps}
                                           onChange={this.handleTableChange}
+                                          rowSelection={rowSelection}
                                         />
                                       </div>
                                   }
