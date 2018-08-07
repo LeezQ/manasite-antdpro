@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import {Form, Button,Modal,Input,Select ,Icon,message} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getRoutes } from '../../utils/utils';
-// import Ueditor from '../../components/Ueditor';
+import Ueditor from '../../components/Ueditor';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -54,32 +54,37 @@ export default class EditForm extends Component {
 
     handleSubmit=(e)=>{
         e.preventDefault();
-        if(!this.state.title){
-            return message.warning("请输入标题");
-        }
+        let content = UE.getEditor("content").getContent();
+        this.setState({
+          content:content
+        },()=>{
+            if(!this.state.title){
+                return message.warning("请输入标题");
+            }
 
-        if(!this.state.content){
-            return message.warning("请输入内容");
-        }
+            if(!this.state.content){
+                return message.warning("请输入内容");
+            }
 
-        if(!this.state.category){
-            return message.warning("请输入分类");
-        }
+            if(!this.state.category){
+                return message.warning("请输入分类");
+            }
 
-        if(!this.state.key){
-            return message.warning("请输入关键字");
-        }
+            if(!this.state.key){
+                return message.warning("请输入关键字");
+            }
 
-        const {dispatch} = this.props;
-        dispatch({
-          type: 'edit/add',
-          payload:{
-            ...this.state
-          },
-          callback:()=>{
-              this.props.dispatch(routerRedux.push(`/edit/${this.state.type=="help"?"help":"subject"}`));
-          }
-        });
+            const {dispatch} = this.props;
+            dispatch({
+              type: 'edit/add',
+              payload:{
+                ...this.state
+              },
+              callback:()=>{
+                  this.props.dispatch(routerRedux.push(`/edit/${this.state.type=="help"?"help":"subject"}`));
+              }
+            });
+        })
     }
 
     handleCancel=()=>{
@@ -139,7 +144,8 @@ export default class EditForm extends Component {
                         {...formItemLayout}
                         label="内容"
                     >
-                        <Input.TextArea placeholder="请输入内容" rows={5} onChange={(v)=>this.handleChange('content',v.target.value)}/>
+                        {/**<Input.TextArea placeholder="请输入内容" rows={5} onChange={(v)=>this.handleChange('content',v.target.value)}/> **/}
+                        <Ueditor value={'<p></p>'} id="content" height="400"/>
                     </FormItem>
             </Form>
             <div className={styles.button_wrap}>
