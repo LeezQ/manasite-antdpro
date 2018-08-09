@@ -5,6 +5,7 @@ import { Link } from 'dva/router';
 import styles from './index.less';
 import { urlToList } from '../_utils/pathTools';
 import logo2 from '../../assets/logo_white_2.png';
+import { getMenu } from '../../services/system';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -32,10 +33,10 @@ export const getMeunMatchKeys = (flatMenuKeys, path) => {
 export default class SiderMenu extends PureComponent {
   constructor(props) {
     super(props);
-    this.menus = props.menuData;
     this.flatMenuKeys = this.getFlatMenuKeys(props.menuData);
     this.state = {
       openKeys: this.getDefaultCollapsedSubMenus(props),
+      loading: true,
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -45,6 +46,18 @@ export default class SiderMenu extends PureComponent {
       });
     }
   }
+  componentDidMount() {
+    this.loadMenus();
+  }
+
+  loadMenus = async () => {
+    getMenu().then(data => {
+      this.menus = data.data || this.props.menuData;
+      this.setState({
+        loading: false,
+      });
+    });
+  };
   /**
    * Convert pathname to openKeys
    * /list/search/articles = > ['list','/list/search']
@@ -191,7 +204,8 @@ export default class SiderMenu extends PureComponent {
   };
   render() {
     const { logo, collapsed, onCollapse } = this.props;
-    const { openKeys } = this.state;
+    const { openKeys, loading } = this.state;
+    if (loading) return null;
     // Don't show popup menu when it is been collapsed
     const menuProps = collapsed
       ? {}
@@ -216,7 +230,9 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} key="logo">
           <Link to="/">
             <img src={logo} alt="logo" />
-            <h1><img src={logo2} alt="logo" /></h1>
+            <h1>
+              <img src={logo2} alt="logo" />
+            </h1>
           </Link>
         </div>
         <Menu

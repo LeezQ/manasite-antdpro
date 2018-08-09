@@ -1,13 +1,6 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Table,
-} from 'antd';
+import { Card, Form, Table } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TableList.less';
@@ -16,13 +9,12 @@ import styles from './TableList.less';
   system,
   loading: loading.models.system,
 }))
-
 @Form.create()
 export default class Log extends PureComponent {
-  constructor(props){
-    super(props)
-    this.state={}
-    this.columns=[
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.columns = [
       {
         title: '操作项',
         dataIndex: 'action',
@@ -46,31 +38,25 @@ export default class Log extends PureComponent {
       {
         title: '操作时间',
         dataIndex: 'time',
-      }
-    ]
+      },
+    ];
   }
-  componentDidMount() {
-  }
-  
-  edit(key){
-  
-  }
-  
-  render(){
-    
-    return(
-    <PageHeaderLayout title="日志管理">
-      <Card bordered={false}>
-        <div className={styles.tableList}>
-          <Table
-          bordered
-          dataSource={this.state.data}
-          columns={this.columns}
-          rowClassName="editable-row"
-          />
-        </div>
-      </Card>
-    </PageHeaderLayout>
-    )
+  componentDidMount() {}
+
+  render() {
+    return (
+      <PageHeaderLayout title="日志管理">
+        <Card bordered={false}>
+          <div className={styles.tableList}>
+            <Table
+              bordered
+              dataSource={this.state.data}
+              columns={this.columns}
+              rowClassName="editable-row"
+            />
+          </div>
+        </Card>
+      </PageHeaderLayout>
+    );
   }
 }

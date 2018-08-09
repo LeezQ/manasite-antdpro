@@ -50,8 +50,6 @@ export default class Sort extends PureComponent {
     });
   }
 
-  edit(key) {}
-
   render() {
     return (
       <PageHeaderLayout title="排序管理">

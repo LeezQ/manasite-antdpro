@@ -79,19 +79,27 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['user'], () => import('../routes/UserManage/UserList')),
     },
     '/users/detailform': {
-      component: dynamicWrapper(app, ['user','discover'], () => import('../routes/UserManage/UserDetail')),
+      component: dynamicWrapper(app, ['user', 'discover'], () =>
+        import('../routes/UserManage/UserDetail')
+      ),
     },
     '/users/editform': {
-      component: dynamicWrapper(app, ['user','discover'], () => import('../routes/UserManage/UserEdit')),
+      component: dynamicWrapper(app, ['user', 'discover'], () =>
+        import('../routes/UserManage/UserEdit')
+      ),
     },
     '/users/followdata': {
-      component: dynamicWrapper(app, ['user','follow'], () => import('../routes/UserManage/ContactData')),
+      component: dynamicWrapper(app, ['user', 'follow'], () =>
+        import('../routes/UserManage/ContactData')
+      ),
     },
     '/result/success': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
     },
-    '/channel/list':{
-      component:dynamicWrapper(app,['channel'],()=>import('../routes/ChannelManage/ChannelList')),
+    '/channel/list': {
+      component: dynamicWrapper(app, ['channel'], () =>
+        import('../routes/ChannelManage/ChannelList')
+      ),
     },
     '/result/fail': {
       component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
@@ -121,16 +129,24 @@ export const getRouterData = app => {
     },
     // 财务报表
     '/financial/chargerecord': {
-      component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/ChargeRecord')),
+      component: dynamicWrapper(app, ['financial', 'user'], () =>
+        import('../routes/Financial/ChargeRecord')
+      ),
     },
     '/financial/deposit': {
-      component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/Deposit')),
+      component: dynamicWrapper(app, ['financial', 'user'], () =>
+        import('../routes/Financial/Deposit')
+      ),
     },
     '/financial/presentrecord': {
-      component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/PresentRecord')),
+      component: dynamicWrapper(app, ['financial', 'user'], () =>
+        import('../routes/Financial/PresentRecord')
+      ),
     },
     '/financial/rechargerecord': {
-      component: dynamicWrapper(app, ['financial','user'], () => import('../routes/Financial/RechargeRecord')),
+      component: dynamicWrapper(app, ['financial', 'user'], () =>
+        import('../routes/Financial/RechargeRecord')
+      ),
     },
     // 编辑管理
     '/edit': {
@@ -145,27 +161,39 @@ export const getRouterData = app => {
     '/edit/content/:type': {
       component: dynamicWrapper(app, ['edit'], () => import('../routes/Edit/EditForm')),
     },
-    //活动管理-置换管理
+    // 活动管理-置换管理
     '/dynamic/exchange': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Exchange')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/Exchange')
+      ),
     },
     '/dynamic/activity': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Activity')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/Activity')
+      ),
     },
     '/dynamic/share': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Share')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () => import('../routes/Dynamic/Share')),
     },
     '/dynamic/comment': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/Comment')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/Comment')
+      ),
     },
     '/dynamic/exprofile/:id': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ExchangeProfile')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/ExchangeProfile')
+      ),
     },
     '/dynamic/acprofile/:id': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ActivityProfile')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/ActivityProfile')
+      ),
     },
     '/dynamic/shprofile/:id': {
-      component: dynamicWrapper(app, ['dynamic','user'], () => import('../routes/Dynamic/ShareProfile')),
+      component: dynamicWrapper(app, ['dynamic', 'user'], () =>
+        import('../routes/Dynamic/ShareProfile')
+      ),
     },
     // 系统管理
     '/system/user': {
