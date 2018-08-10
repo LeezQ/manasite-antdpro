@@ -18,8 +18,11 @@ const FormItem = Form.Item;
 
 export default class ChargeRecord extends PureComponent {
 
-  state={
+  state = {
     price:0,
+    user_id:-1,
+    start_time:"2018/01/01 12:00:00",
+    end_time:"2018/12/01 12:00:00"
   }
 
   componentDidMount() {
@@ -32,7 +35,6 @@ export default class ChargeRecord extends PureComponent {
       dispatch({
         type: 'financial/charges',
         payload:{
-            user_id: -1,
             ...this.state
         }
       });
@@ -135,31 +137,39 @@ export default class ChargeRecord extends PureComponent {
       const { getFieldDecorator } = form;
       const columns=[
           {
+            title: '流水号',
+            dataIndex: 'trade_sn',
+          },
+          {
             title: '芥摩号',
             dataIndex: 'user_id',
           },
           {
-            title: '置换单号',
-            dataIndex: 'topic_id',
+            title: '用户名',
+            dataIndex: 'nickname',
           },
           {
-            title: '收取费用(元)',
-            dataIndex: 'charge_fee',
+            title: '类型',
+            dataIndex: 'type',
+            render:text=>{
+                var _types=['','冻结押金','押金解冻','支付引荐费','置换赔偿','充值余额','充值押金','提现']
+                if(text >= _types.length)
+                  return "未知";
+                return _types[text];
+            }
           },
           {
-            title: '置换类型',
-            dataIndex: 'exchange_price',
-            render:val=>val===1?'中价区':'高价区',
+            title: '金额',
+            dataIndex: 'fee',
           },
           {
             title: '收费时间',
             dataIndex: 'create_at',
-          },
-          {
-            title: '操作',
-            dataIndex: '',
-          },
-      ]
+            render:text=>{
+                return moment(text).format("YYYY-MM-DD HH:mm:ss")
+            }
+          }
+      ];
       const content=(
         <div className={styles.pageHeaderContent}>
           <Row>

@@ -2,6 +2,7 @@ import request from '../utils/request';
 
 // 收费记录
 export async function chargesData(param){
+    console.log(param);
     return request(`api/finance/charges`,{
       method:'GET',
       ...param,
