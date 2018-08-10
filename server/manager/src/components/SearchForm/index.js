@@ -64,7 +64,7 @@ export default class index extends Component {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="用户名">
-              {getFieldDecorator('user_name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>

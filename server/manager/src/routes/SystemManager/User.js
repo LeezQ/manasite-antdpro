@@ -81,6 +81,7 @@ export default class User extends PureComponent {
       data: [],
       editingKey: '',
       roles: [],
+      pagination: { currentPage: 1 },
     };
     this.columns = [
       {
@@ -177,7 +178,10 @@ export default class User extends PureComponent {
   getData = params => {
     getUsersList(params).then(data => {
       if (data && data.status === 'ok') {
-        this.setState({ data: data.data.list });
+        this.setState({
+          data: data.data.list,
+          pagination: data.data.pagination,
+        });
       }
     });
   };
@@ -235,6 +239,10 @@ export default class User extends PureComponent {
     });
   }
 
+  handleChange = page => {
+    this.getData({ page });
+  };
+
   render() {
     const components = {
       body: {
@@ -270,6 +278,10 @@ export default class User extends PureComponent {
               bordered
               dataSource={this.state.data}
               columns={columns}
+              pagination={{
+                ...this.state.pagination,
+                onChange: page => this.handleChange(page),
+              }}
               rowKey="user_id"
               rowClassName="editable-row"
             />

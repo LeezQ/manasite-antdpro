@@ -52,7 +52,7 @@ export default class SiderMenu extends PureComponent {
 
   loadMenus = async () => {
     getMenu().then(data => {
-      this.menus = data.data || this.props.menuData;
+      this.menus = data.data.length > 0 ? data.data : this.props.menuData;
       this.setState({
         loading: false,
       });
