@@ -1,12 +1,12 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Table, Alert } from 'antd';
+import React, {PureComponent, Fragment} from 'react';
+import {Table, Alert} from 'antd';
 import styles from './index.less';
 
 function initTotalList(columns) {
   const totalList = [];
   columns.forEach(column => {
     if (column.needTotal) {
-      totalList.push({ ...column, total: 0 });
+      totalList.push({...column, total: 0});
     }
   });
   return totalList;
@@ -15,7 +15,7 @@ function initTotalList(columns) {
 class StandardTable extends PureComponent {
   constructor(props) {
     super(props);
-    const { columns } = props;
+    const {columns} = props;
     const needTotalList = initTotalList(columns);
 
     this.state = {
@@ -28,9 +28,8 @@ class StandardTable extends PureComponent {
   };
 
   render() {
-    const { needTotalList } = this.state;
-    const { data: { list, pagination }, loading, columns, rowKey } = this.props;
-
+    const {needTotalList} = this.state;
+    const {data: {list, pagination}, loading, columns, rowKey, rowClassName} = this.props;
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -42,6 +41,7 @@ class StandardTable extends PureComponent {
         <Table
           loading={loading}
           rowKey={rowKey}
+          rowClassName={rowClassName}
           dataSource={list}
           columns={columns}
           pagination={paginationProps}

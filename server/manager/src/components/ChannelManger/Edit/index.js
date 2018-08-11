@@ -1,96 +1,49 @@
-import React, { Component } from 'react';
-import { Form, Modal, Row, Col, Input, Select, Button, Icon } from 'antd';
+import React, {Component} from 'react';
+import {Form, Modal, Row, Col, Input, Select, Button, Icon} from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 let uuid = 0;
+
 class EditChannelModel extends Component {
   remove = k => {
-    const { form } = this.props;
+    const {form} = this.props;
     const keys = form.getFieldValue('keys');
     form.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
   };
   add = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(uuid);
-    uuid++;
-    form.setFieldsValue({
-      keys: nextKeys,
-    });
+    const {form} = this.props;
   };
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { visible, onCancel, onSave, currentData } = this.props;
+    const {getFieldDecorator, getFieldValue} = this.props.form;
+    const {visible, onCancel, onSave, currentData} = this.props;
     const topformItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
+        xs: {span: 24},
+        sm: {span: 4},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 10 },
+        xs: {span: 24},
+        sm: {span: 10},
       },
     };
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
+        xs: {span: 24},
+        sm: {span: 4},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 24 },
+        xs: {span: 24},
+        sm: {span: 24},
       },
     };
-    getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
-    const formItems = keys.map(k => {
-      return (
-        <Row gutter={16} key={k}>
-          <Col span={6} offset={0}>
-            <FormItem required key={k}>
-              {getFieldDecorator(`display_name[${k}]`, {
-                initialValue: -1,
-                rules: [
-                  {
-                    required: true,
-                    message: '选择别名显示出',
-                  },
-                ],
-              })(
-                <Select>
-                  <Option value={-1}>请选择</Option>
-                  <Option value={0}>分享</Option>
-                  <Option value={1}>置换</Option>
-                  <Option value={2}>发现</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col span={10} offset={0}>
-            <FormItem required key={k}>
-              {getFieldDecorator(`alisa_name[${k}]`, {})(<Input placeholder=" 别名" />)}
-            </FormItem>
-          </Col>
-          <Col span={4} offset={0}>
-            {
-              <Icon
-                className="dynamic-delete-button"
-                type="minus-circle-o"
-                onClick={() => this.remove(k)}
-              />
-            }
-          </Col>
-        </Row>
-      );
-    });
     return (
       <Modal
-        title="增加兴趣"
+        title="修改兴趣"
         visible={visible}
         onCancel={onCancel}
         onOk={onSave}
@@ -107,9 +60,31 @@ class EditChannelModel extends Component {
                   message: '名称不能为空！',
                 },
               ],
-            })(<Input />)}
+            })(<Input/>)}
           </FormItem>
-          <Row gutter={16}>
+          <FormItem {...topformItemLayout} label="显示名称">
+            {getFieldDecorator('displayName', {
+              initialValue: currentData.displayName,
+              rules: [
+                {
+                  required: true,
+                  message: '别名不能为空！',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+          <FormItem {...topformItemLayout} label="排名">
+            {getFieldDecorator('order', {
+              initialValue: currentData.order,
+              rules: [
+                {
+                  required: true,
+                  message: '排名不能为空！',
+                },
+              ],
+            })(<Input/>)}
+          </FormItem>
+          {/* <Row gutter={16}>
             <Col span={6} offset={0}>
               <label>别名显示出</label>
             </Col>
@@ -122,10 +97,11 @@ class EditChannelModel extends Component {
             <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
               <Icon type="plus" />添加
             </Button>
-          </FormItem>
+          </FormItem>*/}
         </Form>
       </Modal>
     );
   }
 }
+
 export default Form.create()(EditChannelModel);

@@ -129,28 +129,44 @@ export default class PresentRecord extends PureComponent {
         const { getFieldDecorator } = form;
         const columns=[
           {
-            title: '芥摩号',
-            dataIndex: 'user_id',
-          },
-          {
             title: '流水号',
             dataIndex: 'trade_sn',
           },
           {
-            title: '充值方式',
-            dataIndex: '',
+            title: '芥摩号',
+            dataIndex: 'user_id',
           },
           {
-            title: '充值金额(元)',
+            title: '用户名',
+            dataIndex: 'nickname',
+          },
+          {
+            title: '提现方式',
             dataIndex: '',
+            render:(text,record)=>{
+                var _types=['','支付宝','微信','App内购','其他'];
+                if(record.charge.pay_by>=_types.length)
+                  return "未知";
+                return _types[record.charge.pay_by];
+            }
+          },
+          {
+            title: '提现金额(元)',
+            dataIndex: 'fee',
           },
           {
             title: '支付账号',
             dataIndex: '',
+            ender:(text,record)=>{
+                return record.charge.pay_account;
+            }
           },
           {
-            title: '充值时间',
-            dataIndex: '',
+            title: '提现时间',
+            dataIndex: 'create_at',
+            render:text=>{
+                return moment(text).format("YYYY-MM-DD HH:mm:ss")
+            }
           },
       ]
         const content=(

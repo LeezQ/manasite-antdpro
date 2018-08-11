@@ -23,3 +23,10 @@ export async function deleteChannel(id) {
     method: 'delete',
   });
 }
+
+export async function addPChannel(param) {
+  return request(`/api/channels/batch/parent`, {
+    method: 'POST',
+    body: param,
+  });
+}
