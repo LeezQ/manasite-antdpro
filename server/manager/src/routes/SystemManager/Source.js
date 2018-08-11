@@ -87,6 +87,7 @@ export default class Source extends PureComponent {
 
   renderItems = (data, dom = [], n = 1) => {
     const current = this.current[n - 1] || 0;
+    debugger;
     dom.push(
       <div key={data[current].id}>
         <h2 className={styles.title}>{n}级菜单</h2>
@@ -120,7 +121,7 @@ export default class Source extends PureComponent {
         </ul>
       </div>
     );
-    if (data[current].sub_menus.length <= 0) {
+    if (data[current].children && data[current].children.length <= 0) {
       dom.push(
         <div key={Math.random()}>
           <h2 className={styles.title}>操作列表</h2>
@@ -133,7 +134,7 @@ export default class Source extends PureComponent {
       );
       return dom;
     } else {
-      return this.renderItems(data[current].sub_menus, dom, n + 1);
+      return this.renderItems(data[current].children, dom, n + 1);
     }
   };
 
