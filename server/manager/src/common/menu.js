@@ -42,7 +42,7 @@ const menuData = [
   {
     name: '客服系统',
     icon: 'customerservice',
-    path: 'customer',
+    path: 'https://jiemo1.kf5.com/user/login/?request=https%3A%2F%2Fjiemo1.kf5.com%2Fagent',
   },
   {
     name: '编辑管理',
@@ -52,7 +52,7 @@ const menuData = [
   {
     name: '数据统计',
     icon: 'pie-chart',
-    path: 'blank7',
+    path: 'https://passport.umeng.com/login',
   },
   {
     name: '动态管理',
