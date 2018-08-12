@@ -87,7 +87,7 @@ export default class Source extends PureComponent {
 
   renderItems = (data, dom = [], n = 1) => {
     const current = this.current[n - 1] || 0;
-    debugger;
+
     dom.push(
       <div key={data[current].id}>
         <h2 className={styles.title}>{n}级菜单</h2>
